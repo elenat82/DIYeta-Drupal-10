@@ -1,0 +1,5 @@
+/web/sites/*/files
+/web/sites/*/private
+/web/sites/*/settings.php
+/web/sites/*/services.yml
+info-private.txt
