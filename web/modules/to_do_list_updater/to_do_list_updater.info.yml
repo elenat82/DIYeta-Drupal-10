@@ -1,0 +1,5 @@
+name: 'To Do list updater'
+type: module
+description: 'lets the user automatically update a To Do List item'
+package: Custom
+core_version_requirement: ^10 || ^11
