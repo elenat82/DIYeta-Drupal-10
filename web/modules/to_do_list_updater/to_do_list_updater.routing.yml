@@ -1,0 +1,9 @@
+to_do_list_updater.toggle:
+  path: '/to-do-list/toggle/{nid}'
+  defaults:
+    _controller: '\Drupal\to_do_list_updater\Controller\ToDoController::toggle'
+  requirements:
+    _permission: 'access content'
+    nid: \d+
+  options:
+    _format: 'json'

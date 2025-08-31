@@ -1,6 +1,16 @@
 <?php
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
- * @file
- * Primary module hooks for To Do list updater module.
+ * Rimuove il pulsante "Save" dal form della view To Do List (display bloccco_vista_todolist).
  */
+function to_do_list_updater_form_views_form_to_do_list_bloccco_vista_todolist_1_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  // Nascondi o rimuovi le actions.
+  if (isset($form['actions'])) {
+    // Opzione A: nascondi
+    $form['actions']['#access'] = FALSE;
+    // Opzione B: rimuovi del tutto
+    // unset($form['actions']);
+  }
+}
