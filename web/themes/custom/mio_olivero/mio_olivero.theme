@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function mio_olivero_preprocess_block(&$variables) {
+  // Sostituisci con il plugin ID corretto del tuo blocco View
+  if (isset($variables['plugin_id']) && $variables['plugin_id'] === 'views_block:bloccco_vista_todolist') {
+    // Allego la libreria JS del modulo AJAX
+    $variables['#attached']['library'][] = 'to_do_list_updater/to_do_list_updater';
+  }
+}
