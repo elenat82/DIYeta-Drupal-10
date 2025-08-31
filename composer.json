@@ -27,6 +27,7 @@
         "drupal/paragraphs": "^1.19",
         "drupal/rules": "^4.0",
         "drupal/token": "^1.15",
+        "drupal/views_entity_form_field": "^1.0@beta",
         "drush/drush": "^13.6"
     },
     "conflict": {
