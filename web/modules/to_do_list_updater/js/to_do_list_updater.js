@@ -1,47 +1,34 @@
-(function ($, Drupal) {
-    Drupal.behaviors.toDoListUpdater = {
-      attach: function (context, settings) {
-  
-        // Imposta lo stato iniziale delle checkbox al caricamento della pagina
-        $('.todo-checkbox', context).once('toDoListUpdaterInit').each(function () {
-          var value = $(this).data('value'); // legge field_stato_attivita dalla riscrittura output
-          if (value === 'completata') {
-            $(this).prop('checked', true);
-            $(this).siblings('.todo-label').text('completata');
-          } else {
-            $(this).prop('checked', false);
-            $(this).siblings('.todo-label').text('da_fare');
-          }
-        });
-  
-        // Gestione click AJAX
-        $('.todo-checkbox', context).once('toDoListUpdaterClick').on('change', function () {
-          var nid = $(this).data('nid');
-          var checkbox = $(this);
-  
-          $.ajax({
-            url: '/to-do-list/toggle/' + nid,
+(function (Drupal, once) {
+  Drupal.behaviors.toDoListUpdater = {
+    attach: function (context, settings) {
+      once('to-do-checkbox', '.todo-checkbox', context).forEach(function (element) {
+        console.log('element: ', element);
+        element.addEventListener('change', function () {
+          const nid = element.getAttribute('data-nid'); // l'ID del nodo
+          console.log('nid: ', nid);
+          const checked = element.checked ? 1 : 0;
+          console.log('checked: ', checked);
+
+          fetch(Drupal.url('to-do-list/update/' + nid), {
             method: 'POST',
-            success: function (res) {
-              if (res.status === 'ok') {
-                // Aggiorna il valore della checkbox e del testo accanto
-                if (res.new_value === 'completata') {
-                  checkbox.prop('checked', true);
-                  checkbox.siblings('.todo-label').text('completata');
-                } else {
-                  checkbox.prop('checked', false);
-                  checkbox.siblings('.todo-label').text('da_fare');
-                }
-              } else {
-                console.error('Errore aggiornamento attività');
-              }
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': drupalSettings.csrf_token
             },
-            error: function () {
-              console.error('Chiamata AJAX fallita');
+            body: JSON.stringify({ value: checked })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('data: ', data);
+            if (data.status === 'success') {
+              console.log('Aggiornato con successo', data);
+            } else {
+              console.error('Errore nell\'aggiornamento', data);
             }
-          });
+          })
+          .catch(error => console.error('Errore fetch:', error));
         });
-      }
-    };
-  })(jQuery, Drupal);
-  
+      });
+    }
+  };
+})(Drupal, once);

@@ -1,9 +1,11 @@
-to_do_list_updater.toggle:
-  path: '/to-do-list/toggle/{nid}'
+to_do_list_updater.update:
+  path: '/to-do-list/update/{nid}'
   defaults:
     _controller: '\Drupal\to_do_list_updater\Controller\ToDoController::toggle'
+    _title: 'Update ToDo'
   requirements:
     _permission: 'access content'
     nid: \d+
+  methods: [POST]
   options:
     _format: 'json'

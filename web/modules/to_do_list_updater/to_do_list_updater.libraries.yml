@@ -1,6 +1,9 @@
 to_do_list_updater:
+  version: 1.x
   js:
     js/to_do_list_updater.js: {}
   dependencies:
     - core/drupal
     - core/jquery
+    - core/drupal.ajax
+    - core/once
