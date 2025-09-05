@@ -23,12 +23,14 @@
         "drupal/core-composer-scaffold": "^10.5",
         "drupal/core-project-message": "^10.5",
         "drupal/core-recommended": "^10.5",
+        "drupal/devel": "^5.4",
         "drupal/libraries": "^4.1",
         "drupal/paragraphs": "^1.19",
         "drupal/rules": "^4.0",
         "drupal/token": "^1.15",
         "drupal/views_entity_form_field": "^1.0@beta",
-        "drush/drush": "^13.6"
+        "drush/drush": "^13.6",
+        "kint-php/kint": "^6.0"
     },
     "conflict": {
         "drupal/drupal": "*"
