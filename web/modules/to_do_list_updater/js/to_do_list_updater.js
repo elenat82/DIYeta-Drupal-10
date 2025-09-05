@@ -2,14 +2,11 @@
   Drupal.behaviors.toDoListUpdater = {
     attach: function (context, settings) {
       once('to-do-checkbox', '.todo-checkbox', context).forEach(function (element) {
-        console.log('element: ', element);
         element.addEventListener('change', function () {
-          const nid = element.getAttribute('data-nid'); // l'ID del nodo
-          console.log('nid: ', nid);
+          const nid = element.getAttribute('data-nid'); 
           const checked = element.checked ? 1 : 0;
           console.log('checked: ', checked);
-
-          fetch(Drupal.url('to-do-list/update/' + nid), {
+          fetch(Drupal.url('to-do-list/update/' + nid), {//url definito in to_do_list_updater.routing.yml campo path
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -20,7 +17,7 @@
           .then(response => response.json())
           .then(data => {
             console.log('data: ', data);
-            if (data.status === 'success') {
+            if (data.status === 'ok') {
               console.log('Aggiornato con successo', data);
             } else {
               console.error('Errore nell\'aggiornamento', data);

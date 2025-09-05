@@ -6,35 +6,56 @@ use Drupal\node\Entity\Node;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ToDoController {
+class ToDoController
+{
 
   //https://www.drupal.org/docs/develop/creating-modules/create-a-custom-page-using-a-controller
 
-  public function toggle($nid, Request $request) {
+  public function toggle($nid, Request $request)
+  {
     $node = Node::load($nid);
-    // Log utile per debug.
+
     \Drupal::logger('to_do_list_updater')->notice(
-      'Nodo @nid',
-      ['@nid' => $nid]
+      'Request completa: @req',
+      ['@req' => json_encode([
+        'query'   => $request->query->all(),//equivale a $_GET
+        'request' => $request->request->all(),//equivale a $_POST
+        'headers' => $request->headers->all(),
+        'content' => $request->getContent(),
+      ], JSON_PRETTY_PRINT)]
     );
+
+    $reqToArray = $request->toArray();
+
+    \Drupal::logger('to_do_list_updater')->notice(
+      'Contenuto reqToArray: <pre>@dump</pre>',
+      ['@dump' => print_r($reqToArray, TRUE)]
+    );
+
+    \Drupal::logger('to_do_list_updater')->notice(
+      'Contenuto reqToArray in json: @json',
+      ['@json' => json_encode($reqToArray, JSON_PRETTY_PRINT)]
+    );
+
+    $data = $request->getPayload()->all();
+
+    \Drupal::logger('to_do_list_updater')->notice(
+      'Contenuto data in json: @json',
+      ['@json' => json_encode($data, JSON_PRETTY_PRINT)]
+    );
+
+    \Drupal::logger('to_do_list_updater')->notice(
+      "Dump grezzo:\n<pre>@dump</pre>",
+      ['@dump' => print_r($request->getPayload()->all(), TRUE)]
+    );
+
+    $new_value = $data['value'];
 
     if ($node && $node->bundle() === 'attivita') {
-      $current = $node->get('field_stato_attivita')->value;
-      $new_value = $request->request->get('checked') === 'true' ? 0 : 1;
-      
-      // Log utile per debug.
-    \Drupal::logger('to_do_list_updater')->notice(
-      'Valore corrente @current e nuovo @new_value',
-      ['@current' => $current, '@new_value' => $new_value]
-    );
-
       $node->set('field_stato_attivita', $new_value);
       $node->save();
-      
-
-      return new JsonResponse(['status' => 'ok', 'nid' => $nid, 'value' => $new_value]);
+      return new JsonResponse(['status' => 'ok', 'nid' => $nid, 'new_value' => $new_value, 'label' => $new_value ? 'completata' : 'da fare']);
     }
-
     return new JsonResponse([
       'status' => 'error',
       'message' => 'Errore durante il salvataggio: ',
