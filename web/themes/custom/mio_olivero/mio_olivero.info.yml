@@ -18,4 +18,4 @@ regions:
   footer_top: Footer Top
   footer_bottom: Footer Bottom
 libraries:
-  - olivero/global-styling
+  - mio_olivero/global-styling

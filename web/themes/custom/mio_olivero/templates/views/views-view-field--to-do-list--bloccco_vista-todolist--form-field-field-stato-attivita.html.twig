@@ -1,10 +1,12 @@
-{# Checkbox custom al posto del widget di Views Entity Form Field #}
 {% set is_checked = row._entity.field_stato_attivita.value ? 'checked' : '' %}
-<input type="checkbox"
-       id="todo-{{ row._entity.id }}"
-       class="todo-checkbox"
-       data-nid="{{ row._entity.id() }}"
-       {{ is_checked }} />
-<span class="todo-label">
-  {{ row._entity.field_stato_attivita.value ? 'completata' : 'da fare' }}
-</span>
+<label class="todo-item">
+  <input type="checkbox"
+         id="todo-{{ row._entity.id }}"
+         class="todo-checkbox"
+         data-nid="{{ row._entity.id() }}"
+         {{ is_checked }} />
+  <span class="todo-label">
+    {{ row._entity.field_stato_attivita.value ? 'completata' : 'da fare' }}
+  </span>
+  <span class="todo-loader" style="display:none;"></span>
+</label>
