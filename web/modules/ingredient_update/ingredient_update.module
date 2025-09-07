@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Ingredient update module.
+ */
+
+ /**
+ * Implements hook_node_presave().
+ */
+function ingredient_update_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+    \Drupal::logger('ingredient_update')->notice('Alter triggered for To Do List form.');
+  if ($entity->getEntityTypeId() === 'paragraph' && $entity->bundle() === 'ingrediente') {
+    if ($entity->hasField('field_alimento') && !$entity->get('field_alimento')->isEmpty()) {
+      $alimento = $entity->get('field_alimento')->entity;
+      if ($alimento && $alimento->hasField('field_unita_riferimento')) {
+        $unita = $alimento->get('field_unita_riferimento')->value;
+        $entity->set('field_unita_riferimento_copy', $unita);
+      }
+    }
+  }
+}
+

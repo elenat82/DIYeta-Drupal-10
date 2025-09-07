@@ -1,0 +1,5 @@
+name: 'Ingredient update'
+type: module
+description: 'pre-populate form field'
+package: Custom
+core_version_requirement: ^10 || ^11
