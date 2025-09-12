@@ -1,0 +1,14 @@
+{
+    "name": "drupal/twig_field",
+    "description": "A simple module that provides Twig field type.",
+    "type": "drupal-module",
+    "homepage": "https://www.drupal.org/project/twig_field",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/twig_field"
+    },
+    "license": "GPL-2.0+",
+    "require": {
+        "drupal/codemirror_editor": "^2",
+        "drupal/core": "^10.3 || ^11"
+    }
+}

@@ -1,0 +1,5 @@
+twig:
+   label: 'Twig field123'
+   description: 'Text field with Twig support.'
+   libraries:
+     - twig_field/field_ui

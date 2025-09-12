@@ -1,0 +1,11 @@
+name: Twig Field alter hook test
+type: module
+package: Testing
+core_version_requirement: ^10.3 || ^11
+dependencies:
+  - twig_field:twig_field
+
+# Information added by Drupal.org packaging script on 2024-09-03
+version: '2.0.0'
+project: 'twig_field'
+datestamp: 1725364618

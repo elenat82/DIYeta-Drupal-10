@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Twig Field alter hook test module.
+ */
+
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_twig_field_widget_variable_alter().
+ */
+function twig_field_alter_hook_test_twig_field_widget_variable_alter(&$options, $alter_context) {
+  unset ($options['Global']['theme_directory']);
+  $options['Other']['user'] = 'Current user';
+}
+
+/**
+ * Implements hook_twig_field_formatter_variable_alter().
+ */
+function twig_field_alter_hook_test_twig_field_formatter_variable_alter(&$options, $alter_context) {
+  $options['user'] = User::load(\Drupal::currentUser()->id());
+}
