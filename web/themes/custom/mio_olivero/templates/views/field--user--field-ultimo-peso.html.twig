@@ -1,0 +1,13 @@
+{% if items is not empty %}
+  {% set peso = items.0.content['#markup']|trim %}
+  {% set min_peso = 40 %}
+  {% set max_peso = 120 %}
+  {% set percent = ((peso - min_peso) / (max_peso - min_peso) * 100)|round(0, 'floor') %}
+
+  <div class="peso-bar">
+    <div class="peso-bar__fill" style="width: {{ percent }}%">
+      {{ peso }} kg
+    </div>
+  </div>
+{% endif %}
+
