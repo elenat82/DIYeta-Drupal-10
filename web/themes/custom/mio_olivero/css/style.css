@@ -15,21 +15,44 @@
     100% { transform: rotate(360deg); }
   }
 
-  .peso-bar {
-    width: 100%;
-    background: #eee;
-    border-radius: 4px;
-    margin: 0.5rem 0;
-  }
+  .bmi-wrapper { margin: 1rem 0; font-family: system-ui, sans-serif; }
+  .bmi-info { margin-bottom: 0.5rem; font-size: 0.95rem; color: #222; }
   
-  .peso-bar__fill {
-    background: #4caf50;
-    height: 20px;
-    color: #fff;
+  .bmi-bar {
+    display: flex;
+    position: relative;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    font-size: 12px;
     text-align: center;
-    line-height: 20px;
-    border-radius: 4px;
-    transition: width 0.5s ease;
+    align-items: center;
+  }
+  .bmi-segment { flex: 1; display: flex; align-items: center; justify-content: center; color: #fff; padding: 6px; box-sizing: border-box; }
+  .bmi-underweight { background: #3b82f6; } /* blu */
+  .bmi-normal { background: #22c55e; }      /* verde */
+  .bmi-overweight { background: #eab308; }  /* giallo */
+  .bmi-obese { background: #ef4444; }       /* rosso */
+  
+  /* Indicatore */
+  .bmi-indicator {
+    position: relative;
+    margin-top: -34px; /* solleva l'indicatore sopra la barra; regola se serve */
+    width: 0;
+    pointer-events: none;
+  }
+  .bmi-indicator-arrow {
+    transform: translateX(-50%);
+    position: absolute;
+    left: 50%;
+    top: -18px;
+    font-size: 20px;
+    color: #000;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.6);
   }
   
+  /* opzionale: etichette piccole dentro i segmenti */
+  .bmi-segment span { display:block; line-height:1; text-shadow: 0 1px 0 rgba(0,0,0,0.1); }
+  .bmi-segment small { display:block; font-size:10px; opacity:0.95; color: rgba(255,255,255,0.95); }
   

@@ -10,3 +10,34 @@ function mio_olivero_preprocess_block(&$variables) {
     $variables['#attached']['library'][] = 'to_do_list_updater/to_do_list_updater';
   }
 }
+
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function mio_olivero_preprocess_field(&$variables) {
+  // Assicuriamoci che sia il campo corretto (ultimo peso dello user).
+  if ($variables['element']['#field_name'] === 'field_ultimo_peso'
+      && $variables['element']['#entity_type'] === 'user') {
+
+    /** @var \Drupal\user\Entity\User $user */
+    $user = $variables['element']['#object'];
+
+    $altezza = $user->get('field_altezza_in_cm')->value ?? NULL;
+    $peso = $user->get('field_ultimo_peso')->value ?? NULL;
+
+    \Drupal::logger('tema')->notice(
+      'Campo altezza: @altezza e campo peso: @peso',
+      ['@altezza' => $altezza, '@peso' => $peso]
+    );
+
+    if ($altezza && $peso) {
+      $altezza_m = $altezza / 100;
+      $bmi = round($peso / ($altezza_m * $altezza_m), 1);
+      //Passiamo le variabili al template
+      $variables['bmi'] = $bmi;
+      $variables['peso'] = $peso;
+      $variables['altezza_cm'] = $altezza;
+    }
+  }
+}

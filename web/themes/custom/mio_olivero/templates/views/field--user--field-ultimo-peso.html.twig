@@ -1,13 +1,51 @@
-{% if items is not empty %}
-  {% set peso = items.0.content['#markup']|trim %}
-  {% set min_peso = 40 %}
-  {% set max_peso = 120 %}
-  {% set percent = ((peso - min_peso) / (max_peso - min_peso) * 100)|round(0, 'floor') %}
-
-  <div class="peso-bar">
-    <div class="peso-bar__fill" style="width: {{ percent }}%">
-      {{ peso }} kg
+{# field--user--field-ultimo-peso.html.twig #}
+<div class="bmi-wrapper">
+  {% if bmi is defined %}
+    {# forziamo il tipo numerico senza |float #}
+    {% set bmi = (bmi / 1) %}
+    <div class="bmi-info">
+      <p><strong>Ultimo peso registrato:</strong> {{ peso }} kg</p>
+      <p><strong>BMI attuale:</strong> {{ bmi|round(1) }}</p>
     </div>
-  </div>
-{% endif %}
 
+    {# Barra divisa in 4 segmenti uguali (25% ciascuno) #}
+    <div class="bmi-bar" role="img" aria-label="Barra BMI">
+      <div class="bmi-segment bmi-underweight"><span>Sottopeso<br><small>&lt; 18.5</small></span></div>
+      <div class="bmi-segment bmi-normal"><span>Normopeso<br><small>18.5–24.9</small></span></div>
+      <div class="bmi-segment bmi-overweight"><span>Sovrappeso<br><small>25–29.9</small></span></div>
+      <div class="bmi-segment bmi-obese"><span>Obeso<br><small>&ge; 30</small></span></div>
+    </div>
+
+    {# Calcolo percentuale posizionamento dell'indicatore, mappato per soglie #}
+    {% set t1 = 18.5 %}
+    {% set t2 = 25 %}
+    {% set t3 = 30 %}
+    {% set pct = 0 %}
+
+    {% if bmi < t1 %}
+      {# mappiamo 0..t1 -> 0..25% #}
+      {% set pct = (bmi / t1) * 25 %}
+    {% elseif bmi < t2 %}
+      {# mappiamo t1..t2 -> 25..50% #}
+      {% set pct = 25 + ((bmi - t1) / (t2 - t1)) * 25 %}
+    {% elseif bmi < t3 %}
+      {# mappiamo t2..t3 -> 50..75% #}
+      {% set pct = 50 + ((bmi - t2) / (t3 - t2)) * 25 %}
+    {% else %}
+      {# mappiamo t3..cap -> 75..100% ; cap evita overflow (es. 40) #}
+      {% set cap = 40 %}
+      {% set pct = 75 + ((bmi - t3) / (cap - t3)) * 25 %}
+    {% endif %}
+
+    {# clamp 0..100 #}
+    {% if pct < 0 %}{% set pct = 0 %}{% endif %}
+    {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+
+    {# Indicatore centrato con translateX(-50%) #}
+    <div class="bmi-indicator" style="left: {{ pct }}%;">
+      <div class="bmi-indicator-arrow">▲</div>
+    </div>
+  {% else %}
+    <p><em>BMI non disponibile (nessuna misurazione inserita).</em></p>
+  {% endif %}
+</div>
