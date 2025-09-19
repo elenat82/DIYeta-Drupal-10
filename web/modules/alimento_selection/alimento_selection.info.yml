@@ -1,0 +1,8 @@
+name: 'Alimento selection'
+type: module
+description: 'Permette di mostrare Alimenti + marca nella creazione del contenuto Pasto'
+package: Custom
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:node
+  - drupal:taxonomy
