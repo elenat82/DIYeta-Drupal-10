@@ -5,7 +5,6 @@
 {% set prot = paragraph.field_proteine.value %}
 {% set grassi = paragraph.field_grassi.value %}
 {% set carbo = paragraph.field_carboidrati.value %}
-{% set porzione_g = paragraph.field_porzione_grammi.value %}
 {% set porzione_descr = paragraph.field_porzione_descrizione.value %}
 
 <div class="valore-nutrizionale">
@@ -13,11 +12,6 @@
     <h4>Valori per 100 g</h4>
   {% elseif unit == 'per_porzione' %}
     <h4>Valori per porzione</h4>
-    {% if porzione_g %}
-      <div class="porzione">
-        <small>Porzione: {{ porzione_g }} g</small>
-      </div>
-    {% endif %}
     {% if porzione_descr %}
       <div class="porzione">
         <small>{{ porzione_descr }}</small>
