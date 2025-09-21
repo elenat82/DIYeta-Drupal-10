@@ -1,0 +1,47 @@
+[
+    {
+        "type": "Directory",
+        "name": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\alimento_selection",
+        "parent_id": null,
+        "fsPath": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\alimento_selection",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "nbJfq94DPRSVZNGH"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\bmi_calculator",
+        "parent_id": null,
+        "fsPath": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\bmi_calculator",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "qGXlKhy8WitPmCLE"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\ingredient_update",
+        "parent_id": null,
+        "fsPath": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\ingredient_update",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "BfCEqhSL41K2eGHO"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\to_do_list_updater",
+        "parent_id": null,
+        "fsPath": "c:\\xampp\\htdocs\\DIYeta\\web\\modules\\to_do_list_updater",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "f8cbnqXrR75ACLOY"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\xampp\\htdocs\\DIYeta\\web\\themes\\custom\\mio_olivero",
+        "parent_id": null,
+        "fsPath": "c:\\xampp\\htdocs\\DIYeta\\web\\themes\\custom\\mio_olivero",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "uleKYtfAxPiaZQ61"
+    }
+]
