@@ -6,6 +6,8 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\node\NodeInterface;
+use Drupal\paragraphs\ParagraphInterface;
 
 //https://drupalize.me/tutorial/form-element-reference
 //https://fossies.org/linux/drupal/core/lib/Drupal/Core/Form/FormBuilder.php
@@ -86,22 +88,127 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
  */
 function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 {
-  \Drupal::logger('mio_pasto')->notice('🚀 Entrato in mio_pasto_update_counter');
 
-  $kcal_total = 456;
-  $protein_total = 57;
-  $carbs_total = 32;
-  $fat_total = 21;
+  $kcal_tot = 0;
+  $protein_tot = 0;
+  $carbs_tot = 0;
+  $fat_tot = 0;
 
-  // Recupera i valori dei paragrafi inseriti nel nodo.
-  $componente_pasto_values = $form_state->getValue('field_componente_pasto') ?? [];
+  // Recupera i paragrafi dal field_componente_pasto
+  $paragraphs = $form_state->getValue('field_componente_pasto');
+  \Drupal::logger('mio_pasto')->notice('Paragrafi ricevuti: <pre>@dump</pre>', [
+    '@dump' => print_r($paragraphs, TRUE),
+  ]);
+
+  if (!empty($paragraphs)) {
+    foreach ($paragraphs as $delta => $paragraph_item) {
+      if (empty($paragraph_item['subform'])) {
+        \Drupal::logger('mio_pasto')->notice('Delta @delta senza subform', ['@delta' => $delta]);
+        continue;
+      }
+      $subform = $paragraph_item['subform'];
+
+      // Alimento per 100g
+      if (!empty($subform['field_alimento'][0]['target_id'])) {
+        $alimento_id = $subform['field_alimento'][0]['target_id'];
+        $alimento_entity = \Drupal::entityTypeManager()->getStorage('node')->load($alimento_id);
+
+        if (!$alimento_entity) {
+          \Drupal::logger('mio_pasto')->error('Nodo alimento 100g non trovato: ID @id', ['@id' => $alimento_id]);
+        } else {
+          if ($alimento_entity instanceof \Drupal\node\NodeInterface) {
+            $fields = $alimento_entity->getFieldDefinitions();
+            $field_names = array_keys($fields);
+            \Drupal::logger('mio_pasto')->notice('Campi disponibili: @fields', ['@fields' => implode(', ', $field_names)]);
+            if (!$alimento_entity->get('field_valori_nutrizionali')->isEmpty()) {
+              // Prendiamo il primo paragraph collegato.
+              $paragraph = $alimento_entity->get('field_valori_nutrizionali')->entity;
+              if ($paragraph) {
+                $kcal = $paragraph->get('field_kcal')->value ?? 0;
+                $protein = $paragraph->get('field_proteine')->value ?? 0;
+                $carbs = $paragraph->get('field_carboidrati')->value ?? 0;
+                $fat = $paragraph->get('field_grassi')->value ?? 0;
+              }
+            }
+
+            $quantita = $subform['field_quantita_in_grammi'][0]['value'] ?? 0;
+
+            $kcal_tot += ($kcal * $quantita / 100);
+            $protein_tot += ($protein * $quantita / 100);
+            $carbs_tot += ($carbs * $quantita / 100);
+            $fat_tot += ($fat * $quantita / 100);
+
+            \Drupal::logger('mio_pasto')->notice(
+              'Delta @delta - Alimento 100g ID @id: kcal @k, P @p, C @c, F @f, qty @q',
+              [
+                '@delta' => $delta,
+                '@id' => $alimento_id,
+                '@k' => $kcal,
+                '@p' => $protein,
+                '@c' => $carbs,
+                '@f' => $fat,
+                '@q' => $quantita,
+              ]
+            );
+          }
+        }
+      }
+    }
+
+    // Alimento per porzione
+    if (!empty($subform['field_alimento_per_porzione'][0]['target_id'])) {
+      $alimento_id = $subform['field_alimento_per_porzione'][0]['target_id'];
+      $alimento_entity = \Drupal::entityTypeManager()->getStorage('node')->load($alimento_id);
+      if (!$alimento_entity) {
+        \Drupal::logger('mio_pasto')->error('Nodo alimento per porzione non trovato: ID @id', ['@id' => $alimento_id]);
+      } else {
+        if ($alimento_entity instanceof \Drupal\node\NodeInterface) {
+          if (!$alimento_entity->get('field_valori_nutrizionali')->isEmpty()) {
+            // Prendiamo il primo paragraph collegato.
+            $paragraph = $alimento_entity->get('field_valori_nutrizionali')->entity;
+            if ($paragraph) {
+              $kcal = $paragraph->get('field_kcal')->value ?? 0;
+              $protein = $paragraph->get('field_proteine')->value ?? 0;
+              $carbs = $paragraph->get('field_carboidrati')->value ?? 0;
+              $fat = $paragraph->get('field_grassi')->value ?? 0;
+            }
+
+            $n_porzioni = $subform['field_numero_porzioni'][0]['value'] ?? 0;
+
+            $kcal_tot += ($kcal * $n_porzioni);
+            $protein_tot += ($protein * $n_porzioni);
+            $carbs_tot += ($carbs * $n_porzioni);
+            $fat_tot += ($fat * $n_porzioni);
+
+            \Drupal::logger('mio_pasto')->notice(
+              'Delta @delta - Alimento per porzione ID @id: kcal @k, P @p, C @c, F @f, portions @n',
+              [
+                '@delta' => $delta,
+                '@id' => $alimento_id,
+                '@k' => $kcal,
+                '@p' => $protein,
+                '@c' => $carbs,
+                '@f' => $fat,
+                '@n' => $n_porzioni,
+              ]
+            );
+          }
+        }
+      }
+    }
+  }
 
   // Crea la risposta AJAX
   $response = new AjaxResponse();
-  $markup = "<div id='nutrition-counter'>Kcal: " . round($kcal_total) .
-    " | P: " . round($protein_total) . "g | C: " . round($carbs_total) .
-    "g | F: " . round($fat_total) . "g</div>";
+  $markup = "<div id='nutrition-counter'>Kcal: " . round($kcal_tot) . " | P: " . round($protein_tot) . "g | C: " . round($carbs_tot) . "g | F: " . round($fat_tot) . "g</div>";
   $response->addCommand(new HtmlCommand('#nutrition-counter', $markup));
+
+  \Drupal::logger('mio_pasto')->notice('Totali aggiornati: Kcal=@k P=@p C=@c F=@f', [
+    '@k' => round($kcal_tot),
+    '@p' => round($protein_tot),
+    '@c' => round($carbs_tot),
+    '@f' => round($fat_tot),
+  ]);
 
   return $response;
 }
