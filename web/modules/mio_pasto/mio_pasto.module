@@ -1,0 +1,107 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\paragraphs\Entity\Paragraph;
+
+//https://drupalize.me/tutorial/form-element-reference
+//https://fossies.org/linux/drupal/core/lib/Drupal/Core/Form/FormBuilder.php
+//https://pasankg.medium.com/updating-form-field-values-with-ajax-callbacks-in-drupal-10-8ecc26692185
+//https://api.drupal.org/api/drupal/core%21modules%21field%21field.api.php/function/hook_field_widget_complete_form_alter/11.x
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+  // Aggiungo il box sotto al form per mostrare i nutrienti totali.
+  $form['nutrition_counter'] = [
+    '#type' => 'container',
+    '#attributes' => ['id' => 'nutrition-counter'],
+    '#weight' => 100,
+    'content' => [
+      '#markup' => 'Kcal: 0 | P: 0g | C: 0g | F: 0g',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_field_widget_complete_form_alter().
+ */
+function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateInterface $form_state, &$context)
+{
+  $field_name = $context['items']->getFieldDefinition()->getName();
+  $entity_type = $context['items']->getEntity()->getEntityTypeId();
+  $bundle = $context['items']->getEntity()->bundle();
+
+  // Interveniamo solo sui paragraph che ci interessano.
+  if ($entity_type === 'paragraph' && in_array($bundle, ['ingrediente_per_100_grammi', 'ingrediente_per_porzione'])) {
+
+    // Per campi di tipo select (Entity Reference)
+    if (in_array($field_name, ['field_alimento', 'field_alimento_per_porzione'])) {
+      foreach (Element::children($element['widget']) as $i) {
+        if (isset($element['widget'][$i]['target_id'])) {
+          $element['widget'][$i]['target_id']['#ajax'] = [
+            'callback' => 'mio_pasto_update_counter',
+            'event' => 'change',
+            'wrapper' => 'nutrition-counter',
+            'progress' => ['type' => 'throbber'],
+          ];
+          \Drupal::logger('mio_pasto')->notice('AJAX agganciato a @f delta @i (bundle: @b)', [
+            '@f' => $field_name,
+            '@i' => $i,
+            '@b' => $bundle,
+          ]);
+        }
+      }
+    }
+
+    // Per campi numerici
+    if (in_array($field_name, ['field_quantita_in_grammi', 'field_numero_porzioni'])) {
+      foreach (Element::children($element['widget']) as $i) {
+        if (isset($element['widget'][$i]['value'])) {
+          $element['widget'][$i]['value']['#ajax'] = [
+            'callback' => 'mio_pasto_update_counter',
+            'event' => 'change',
+            'wrapper' => 'nutrition-counter',
+            'progress' => ['type' => 'throbber'],
+          ];
+          \Drupal::logger('mio_pasto')->notice('AJAX agganciato a @f delta @i (bundle: @b)', [
+            '@f' => $field_name,
+            '@i' => $i,
+            '@b' => $bundle,
+          ]);
+        }
+      }
+    }
+  }
+}
+
+
+/**
+ * AJAX callback per aggiornare il contatore dei nutrienti.
+ */
+function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
+{
+  \Drupal::logger('mio_pasto')->notice('🚀 Entrato in mio_pasto_update_counter');
+
+  $kcal_total = 456;
+  $protein_total = 57;
+  $carbs_total = 32;
+  $fat_total = 21;
+
+  // Recupera i valori dei paragrafi inseriti nel nodo.
+  $componente_pasto_values = $form_state->getValue('field_componente_pasto') ?? [];
+
+  // Crea la risposta AJAX
+  $response = new AjaxResponse();
+  $markup = "<div id='nutrition-counter'>Kcal: " . round($kcal_total) .
+    " | P: " . round($protein_total) . "g | C: " . round($carbs_total) .
+    "g | F: " . round($fat_total) . "g</div>";
+  $response->addCommand(new HtmlCommand('#nutrition-counter', $markup));
+
+  return $response;
+}
