@@ -25,7 +25,16 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
     '#attributes' => ['id' => 'nutrition-counter'],
     '#weight' => 100,
     'content' => [
-      '#markup' => 'Kcal: 0 | P: 0g | C: 0g | F: 0g',
+      '#markup' => '
+        <div class="nutrition-summary">
+          <ul>
+            <li><strong>Kcal:</strong> 0</li>
+            <li><strong>Proteine:</strong> 0g (0%)</li>
+            <li><strong>Carboidrati:</strong> 0g (0%)</li>
+            <li><strong>Grassi:</strong> 0g (0%)</li>
+          </ul>
+        </div>
+      ',
     ],
   ];
 }
@@ -138,18 +147,13 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
             $carbs_tot += ($carbs * $quantita / 100);
             $fat_tot += ($fat * $quantita / 100);
 
-            \Drupal::logger('mio_pasto')->notice(
-              'Delta @delta - Alimento 100g ID @id: kcal @k, P @p, C @c, F @f, qty @q',
-              [
-                '@delta' => $delta,
-                '@id' => $alimento_id,
-                '@k' => $kcal,
-                '@p' => $protein,
-                '@c' => $carbs,
-                '@f' => $fat,
-                '@q' => $quantita,
-              ]
-            );
+            // Calcolo delle percentuali
+            $perc_protein = $perc_carbs = $perc_fat = 0;
+            if ($kcal_tot > 0) {
+              $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_carbs   = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_fat     = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
+            }
           }
         }
       }
@@ -180,18 +184,13 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
             $carbs_tot += ($carbs * $n_porzioni);
             $fat_tot += ($fat * $n_porzioni);
 
-            \Drupal::logger('mio_pasto')->notice(
-              'Delta @delta - Alimento per porzione ID @id: kcal @k, P @p, C @c, F @f, portions @n',
-              [
-                '@delta' => $delta,
-                '@id' => $alimento_id,
-                '@k' => $kcal,
-                '@p' => $protein,
-                '@c' => $carbs,
-                '@f' => $fat,
-                '@n' => $n_porzioni,
-              ]
-            );
+            // Calcolo delle percentuali
+            $perc_protein = $perc_carbs = $perc_fat = 0;
+            if ($kcal_tot > 0) {
+              $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_carbs   = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_fat     = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
+            }
           }
         }
       }
@@ -200,7 +199,17 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 
   // Crea la risposta AJAX
   $response = new AjaxResponse();
-  $markup = "<div id='nutrition-counter'>Kcal: " . round($kcal_tot) . " | P: " . round($protein_tot) . "g | C: " . round($carbs_tot) . "g | F: " . round($fat_tot) . "g</div>";
+  $markup = "
+  <div id='nutrition-counter' class='nutrition-summary'>
+    <ul>
+      <li><strong>Kcal:</strong> " . round($kcal_tot) . "</li>
+      <li><strong>Proteine:</strong> " . round($protein_tot) . "g (" . $perc_protein . "%)</li>
+      <li><strong>Carboidrati:</strong> " . round($carbs_tot) . "g (" . $perc_carbs . "%)</li>
+      <li><strong>Grassi:</strong> " . round($fat_tot) . "g (" . $perc_fat . "%)</li>
+    </ul>
+  </div>
+";
+
   $response->addCommand(new HtmlCommand('#nutrition-counter', $markup));
 
   \Drupal::logger('mio_pasto')->notice('Totali aggiornati: Kcal=@k P=@p C=@c F=@f', [
