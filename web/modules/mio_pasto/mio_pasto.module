@@ -37,6 +37,24 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
       ',
     ],
   ];
+
+  if (isset($form['field_componente_pasto'])) {
+    $field_componente_pasto = &$form['field_componente_pasto'];
+    if (isset($field_componente_pasto['widget'])) {
+      $paragraphs_widget = &$field_componente_pasto['widget'];
+      foreach (Element::children($paragraphs_widget) as $delta) {
+        if (isset($paragraphs_widget[$delta]['top']['actions']['dropdown_actions']['remove_button'])) {
+          // @TODO da modificare, così sostituisce la funzionalità originaria del bottone remove
+          $paragraphs_widget[$delta]['top']['actions']['dropdown_actions']['remove_button']['#ajax'] = [
+            'callback' => 'mio_pasto_update_counter',
+            'event' => 'mousedown',
+            'wrapper' => 'nutrition-counter',
+            'progress' => ['type' => 'throbber'],
+          ];
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -61,11 +79,6 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
             'wrapper' => 'nutrition-counter',
             'progress' => ['type' => 'throbber'],
           ];
-          \Drupal::logger('mio_pasto')->notice('AJAX agganciato a @f delta @i (bundle: @b)', [
-            '@f' => $field_name,
-            '@i' => $i,
-            '@b' => $bundle,
-          ]);
         }
       }
     }
@@ -80,11 +93,6 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
             'wrapper' => 'nutrition-counter',
             'progress' => ['type' => 'throbber'],
           ];
-          \Drupal::logger('mio_pasto')->notice('AJAX agganciato a @f delta @i (bundle: @b)', [
-            '@f' => $field_name,
-            '@i' => $i,
-            '@b' => $bundle,
-          ]);
         }
       }
     }
@@ -102,12 +110,10 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
   $protein_tot = 0;
   $carbs_tot = 0;
   $fat_tot = 0;
+  $perc_protein = $perc_carbs = $perc_fat = 0;
 
   // Recupera i paragrafi dal field_componente_pasto
   $paragraphs = $form_state->getValue('field_componente_pasto');
-  \Drupal::logger('mio_pasto')->notice('Paragrafi ricevuti: <pre>@dump</pre>', [
-    '@dump' => print_r($paragraphs, TRUE),
-  ]);
 
   if (!empty($paragraphs)) {
     foreach ($paragraphs as $delta => $paragraph_item) {
@@ -128,7 +134,6 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
           if ($alimento_entity instanceof \Drupal\node\NodeInterface) {
             $fields = $alimento_entity->getFieldDefinitions();
             $field_names = array_keys($fields);
-            \Drupal::logger('mio_pasto')->notice('Campi disponibili: @fields', ['@fields' => implode(', ', $field_names)]);
             if (!$alimento_entity->get('field_valori_nutrizionali')->isEmpty()) {
               // Prendiamo il primo paragraph collegato.
               $paragraph = $alimento_entity->get('field_valori_nutrizionali')->entity;
@@ -148,11 +153,10 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
             $fat_tot += ($fat * $quantita / 100);
 
             // Calcolo delle percentuali
-            $perc_protein = $perc_carbs = $perc_fat = 0;
             if ($kcal_tot > 0) {
               $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
-              $perc_carbs   = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
-              $perc_fat     = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
+              $perc_carbs = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_fat = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
             }
           }
         }
@@ -185,11 +189,10 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
             $fat_tot += ($fat * $n_porzioni);
 
             // Calcolo delle percentuali
-            $perc_protein = $perc_carbs = $perc_fat = 0;
             if ($kcal_tot > 0) {
               $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
-              $perc_carbs   = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
-              $perc_fat     = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
+              $perc_carbs = round(($carbs_tot * 4 / $kcal_tot) * 100, 1);
+              $perc_fat = round(($fat_tot * 9 / $kcal_tot) * 100, 1);
             }
           }
         }
@@ -211,13 +214,6 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 ";
 
   $response->addCommand(new HtmlCommand('#nutrition-counter', $markup));
-
-  \Drupal::logger('mio_pasto')->notice('Totali aggiornati: Kcal=@k P=@p C=@c F=@f', [
-    '@k' => round($kcal_tot),
-    '@p' => round($protein_tot),
-    '@c' => round($carbs_tot),
-    '@f' => round($fat_tot),
-  ]);
 
   return $response;
 }
