@@ -19,25 +19,34 @@ use Drupal\paragraphs\ParagraphInterface;
  */
 function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_state, $form_id)
 {
-  // Aggiungo il box sotto al form per mostrare i nutrienti totali.
-  $form['nutrition_counter'] = [
+  $form['mio_pasto_nutrition_wrapper'] = [
     '#type' => 'container',
-    '#attributes' => ['id' => 'nutrition-counter'],
+    '#attributes' => ['id' => 'mio-pasto-nutrition-wrapper'],
     '#weight' => 100,
-    'content' => [
-      '#markup' => '
-        <div class="nutrition-summary">
-          <ul>
-            <li><strong>Kcal:</strong> 0</li>
-            <li><strong>Proteine:</strong> 0g (0%)</li>
-            <li><strong>Carboidrati:</strong> 0g (0%)</li>
-            <li><strong>Grassi:</strong> 0g (0%)</li>
-          </ul>
-        </div>
-      ',
-    ],
+  ];
+  
+  $fields_to_move = [
+    'field_kcal_pasto',
+    'field_proteine_pasto',
+    'field_carboidrati_pasto',
+    'field_grassi_pasto',
+    'field_percentuale_carboidrati',
+    'field_percentuale_grassi',
+    'field_percentuale_proteine'
   ];
 
+  foreach ($fields_to_move as $fname) {
+    if (isset($form[$fname])) {
+      $form['mio_pasto_nutrition_wrapper'][$fname] = $form[$fname];
+      if (isset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value'])) {
+        $form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#default_value'] = '';
+        unset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#value']);
+      }
+      unset($form[$fname]);
+    }
+  }
+
+  //intercetto pulsante remove paragraph
   if (isset($form['field_componente_pasto'])) {
     $field_componente_pasto = &$form['field_componente_pasto'];
     if (isset($field_componente_pasto['widget'])) {
@@ -48,7 +57,7 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
           $paragraphs_widget[$delta]['top']['actions']['dropdown_actions']['remove_button']['#ajax'] = [
             'callback' => 'mio_pasto_update_counter',
             'event' => 'mousedown',
-            'wrapper' => 'nutrition-counter',
+            'wrapper' => 'mio-pasto-nutrition-wrapper',
             'progress' => ['type' => 'throbber'],
           ];
         }
@@ -56,6 +65,7 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
     }
   }
 }
+
 
 /**
  * Implements hook_field_widget_complete_form_alter().
@@ -76,7 +86,7 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
           $element['widget'][$i]['target_id']['#ajax'] = [
             'callback' => 'mio_pasto_update_counter',
             'event' => 'change',
-            'wrapper' => 'nutrition-counter',
+            'wrapper' => 'mio-pasto-nutrition-wrapper',
             'progress' => ['type' => 'throbber'],
           ];
         }
@@ -90,7 +100,7 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
           $element['widget'][$i]['value']['#ajax'] = [
             'callback' => 'mio_pasto_update_counter',
             'event' => 'change',
-            'wrapper' => 'nutrition-counter',
+            'wrapper' => 'mio-pasto-nutrition-wrapper',
             'progress' => ['type' => 'throbber'],
           ];
         }
@@ -199,28 +209,50 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
     }
   }
 
-  // Crea la risposta AJAX
-  $response = new AjaxResponse();
-  $markup = "
-  <div id='nutrition-counter' class='nutrition-summary'>
-    <ul>
-      <li><strong>Kcal:</strong> " . round($kcal_tot) . "</li>
-      <li><strong>Proteine:</strong> " . round($protein_tot) . "g (" . $perc_protein . "%)</li>
-      <li><strong>Carboidrati:</strong> " . round($carbs_tot) . "g (" . $perc_carbs . "%)</li>
-      <li><strong>Grassi:</strong> " . round($fat_tot) . "g (" . $perc_fat . "%)</li>
-    </ul>
-  </div>
-";
+  $form_state->setValue('field_kcal_pasto', [['value' => round($kcal_tot, 2)]]);
+  $form_state->setValue('field_proteine_pasto', [['value' => round($protein_tot, 2)]]);
+  $form_state->setValue('field_carboidrati_pasto', [['value' => round($carbs_tot, 2)]]);
+  $form_state->setValue('field_grassi_pasto', [['value' => round($fat_tot, 2)]]);
+  // percentuali (opzionali)
+  $form_state->setValue('field_percentuale_proteine', [['value' => $perc_protein]]);
+  $form_state->setValue('field_percentuale_carboidrati', [['value' => $perc_carbs]]);
+  $form_state->setValue('field_percentuale_grassi', [['value' => $perc_fat]]);
 
-  $response->addCommand(new HtmlCommand('#nutrition-counter', $markup));
+  $fields_map = [
+    'field_kcal_pasto' => $kcal_tot,
+    'field_proteine_pasto' => $protein_tot,
+    'field_carboidrati_pasto' => $carbs_tot,
+    'field_grassi_pasto' => $fat_tot,
+    'field_percentuale_proteine' => $perc_protein,
+    'field_percentuale_carboidrati' => $perc_carbs,
+    'field_percentuale_grassi' => $perc_fat,
+  ];
 
-  return $response;
+  foreach ($fields_map as $fname => $val) {
+    if (isset($form['mio_pasto_nutrition_wrapper'][$fname])) {
+      if (isset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value'])) {
+        $form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#value'] = (string) round($val, 2);
+      }
+      elseif (isset($form['mio_pasto_nutrition_wrapper'][$fname][0]['value'])) {
+        $form['mio_pasto_nutrition_wrapper'][$fname][0]['value']['#value'] = (string) round($val, 2);
+      }
+      elseif (isset($form['mio_pasto_nutrition_wrapper'][$fname]['#markup'])) {
+        $form['mio_pasto_nutrition_wrapper'][$fname]['#markup'] = (string) round($val, 2);
+      }
+    }
+  }
+  if (isset($form['mio_pasto_nutrition_wrapper'])) {
+    return $form['mio_pasto_nutrition_wrapper'];
+  }
+
+  return $form;
 }
 
 /**
  * Implements hook_node_presave().
  */
-function mio_pasto_node_presave(NodeInterface $node) {
+function mio_pasto_node_presave(NodeInterface $node)
+{
   if ($node->bundle() !== 'pasto') {
     return;
   }
@@ -240,8 +272,7 @@ function mio_pasto_node_presave(NodeInterface $node) {
   $paragraphs = [];
   try {
     $paragraphs = $node->get($field_name)->referencedEntities();
-  }
-  catch (\Throwable $e) {
+  } catch (\Throwable $e) {
     \Drupal::logger('mio_pasto')->notice('referencedEntities() ha lanciato: @msg — useremo fallback getValue()', ['@msg' => $e->getMessage()]);
     $paragraphs = [];
   }
@@ -270,17 +301,16 @@ function mio_pasto_node_presave(NodeInterface $node) {
             $kcal_100 = (float) ($val_par->get('field_kcal')->value ?? 0);
             $prot_100 = (float) ($val_par->get('field_proteine')->value ?? 0);
             $carb_100 = (float) ($val_par->get('field_carboidrati')->value ?? 0);
-            $fat_100  = (float) ($val_par->get('field_grassi')->value ?? 0);
+            $fat_100 = (float) ($val_par->get('field_grassi')->value ?? 0);
 
             $factor = $qty / 100.0;
-            $kcal_tot    += $kcal_100 * $factor;
+            $kcal_tot += $kcal_100 * $factor;
             $protein_tot += $prot_100 * $factor;
-            $carbs_tot   += $carb_100 * $factor;
-            $fat_tot     += $fat_100 * $factor;
+            $carbs_tot += $carb_100 * $factor;
+            $fat_tot += $fat_100 * $factor;
           }
         }
-      }
-      elseif ($bundle === 'ingrediente_per_porzione') {
+      } elseif ($bundle === 'ingrediente_per_porzione') {
         if (!$paragraph->hasField('field_alimento_per_porzione') || $paragraph->get('field_alimento_per_porzione')->isEmpty()) {
           continue;
         }
@@ -295,12 +325,12 @@ function mio_pasto_node_presave(NodeInterface $node) {
             $kcal_p = (float) ($val_par->get('field_kcal')->value ?? 0);
             $prot_p = (float) ($val_par->get('field_proteine')->value ?? 0);
             $carb_p = (float) ($val_par->get('field_carboidrati')->value ?? 0);
-            $fat_p  = (float) ($val_par->get('field_grassi')->value ?? 0);
+            $fat_p = (float) ($val_par->get('field_grassi')->value ?? 0);
 
-            $kcal_tot    += $kcal_p * $n_porz;
+            $kcal_tot += $kcal_p * $n_porz;
             $protein_tot += $prot_p * $n_porz;
-            $carbs_tot   += $carb_p * $n_porz;
-            $fat_tot     += $fat_p * $n_porz;
+            $carbs_tot += $carb_p * $n_porz;
+            $fat_tot += $fat_p * $n_porz;
           }
         }
       }
@@ -309,9 +339,9 @@ function mio_pasto_node_presave(NodeInterface $node) {
 
   $perc_prot = $perc_carbs = $perc_fat = 0.0;
   if ($kcal_tot > 0.0) {
-    $perc_prot  = round(($protein_tot * 4.0 / $kcal_tot) * 100.0, 1);
+    $perc_prot = round(($protein_tot * 4.0 / $kcal_tot) * 100.0, 1);
     $perc_carbs = round(($carbs_tot * 4.0 / $kcal_tot) * 100.0, 1);
-    $perc_fat   = round(($fat_tot * 9.0 / $kcal_tot) * 100.0, 1);
+    $perc_fat = round(($fat_tot * 9.0 / $kcal_tot) * 100.0, 1);
   }
 
   if ($node->hasField('field_kcal_pasto')) {
