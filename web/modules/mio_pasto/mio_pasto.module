@@ -156,7 +156,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 
             $quantita = $subform['field_quantita_in_grammi'][0]['value'] ?? 0;
 
-            $kcal_tot += ($kcal * $quantita / 100);
+            $kcal_tot += round(($kcal * $quantita / 100));
             $protein_tot += ($protein * $quantita / 100);
             $carbs_tot += ($carbs * $quantita / 100);
             $fat_tot += ($fat * $quantita / 100);
@@ -192,7 +192,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 
             $n_porzioni = $subform['field_numero_porzioni'][0]['value'] ?? 0;
 
-            $kcal_tot += ($kcal * $n_porzioni);
+            $kcal_tot += round(($kcal * $n_porzioni));
             $protein_tot += ($protein * $n_porzioni);
             $carbs_tot += ($carbs * $n_porzioni);
             $fat_tot += ($fat * $n_porzioni);
@@ -209,7 +209,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
     }
   }
 
-  $form_state->setValue('field_kcal_pasto', [['value' => round($kcal_tot, 2)]]);
+  $form_state->setValue('field_kcal_pasto', [['value' => round($kcal_tot)]]);
   $form_state->setValue('field_proteine_pasto', [['value' => round($protein_tot, 2)]]);
   $form_state->setValue('field_carboidrati_pasto', [['value' => round($carbs_tot, 2)]]);
   $form_state->setValue('field_grassi_pasto', [['value' => round($fat_tot, 2)]]);
@@ -345,7 +345,7 @@ function mio_pasto_node_presave(NodeInterface $node)
   }
 
   if ($node->hasField('field_kcal_pasto')) {
-    $node->set('field_kcal_pasto', round($kcal_tot, 2));
+    $node->set('field_kcal_pasto', round($kcal_tot));
   }
   if ($node->hasField('field_proteine_pasto')) {
     $node->set('field_proteine_pasto', round($protein_tot, 2));
@@ -367,7 +367,7 @@ function mio_pasto_node_presave(NodeInterface $node)
   }
 
   \Drupal::logger('mio_pasto')->notice('node_presave: Totali Kcal=@k P=@p C=@c F=@f (prot%=@pp carb%=@cp fat%=@fp)', [
-    '@k' => round($kcal_tot, 2),
+    '@k' => round($kcal_tot),
     '@p' => round($protein_tot, 2),
     '@c' => round($carbs_tot, 2),
     '@f' => round($fat_tot, 2),
