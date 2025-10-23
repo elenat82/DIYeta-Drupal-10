@@ -8,6 +8,7 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\user\Entity\User;
 
 //https://drupalize.me/tutorial/form-element-reference
 //https://fossies.org/linux/drupal/core/lib/Drupal/Core/Form/FormBuilder.php
@@ -21,8 +22,28 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
 {
   $form['mio_pasto_nutrition_wrapper'] = [
     '#type' => 'container',
-    '#attributes' => ['id' => 'mio-pasto-nutrition-wrapper'],
+    '#attributes' => ['id' => 'mio-pasto-nutrition-wrapper', 'class' => ['mio-pasto-nutrition-wrapper']],
     '#weight' => 100,
+  ];
+
+  // Recupera i valori dal current user.
+  $current_user = \Drupal::currentUser();
+  $account = User::load($current_user->id());
+
+  // Mappa: campo pasto → campo utente
+  $user_targets = [
+    'field_percentuale_carboidrati' => [
+      'label' => 'Carboidrati',
+      'value' => $account->get('field_percentuale_carboidrati')->value ?? '',
+    ],
+    'field_percentuale_grassi' => [
+      'label' => 'Grassi',
+      'value' => $account->get('field_percentuale_grassi')->value ?? '',
+    ],
+    'field_percentuale_proteine' => [
+      'label' => 'Proteine',
+      'value' => $account->get('field_percentuale_proteine')->value ?? '',
+    ],
   ];
   
   $fields_to_move = [
@@ -38,10 +59,30 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
   foreach ($fields_to_move as $fname) {
     if (isset($form[$fname])) {
       $form['mio_pasto_nutrition_wrapper'][$fname] = $form[$fname];
+
+      // Pulisci valori predefiniti.
       if (isset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value'])) {
         $form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#default_value'] = '';
         unset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#value']);
       }
+
+      // Aggiunge il markup "Obiettivo utente" **solo per i campi percentuali**.
+      $user_target = [];
+      if (isset($user_targets[$fname]) && $user_targets[$fname]['value'] !== '') {
+        $user_target = [
+          '#type' => 'markup',
+          '#markup' => '<div class="user-target"><small>Obiettivo utente (' . $user_targets[$fname]['label'] . '): <strong>' . $user_targets[$fname]['value'] . '%</strong></small></div>',
+        ];
+      }
+
+      // Crea il contenitore combinato.
+      $form['mio_pasto_nutrition_wrapper'][$fname] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['nutrition-field-pair']],
+        'pasto_field' => $form[$fname],
+        'user_target' => $user_target
+      ];
+
       unset($form[$fname]);
     }
   }
@@ -114,6 +155,8 @@ function mio_pasto_field_widget_complete_form_alter(array &$element, FormStateIn
  */
 function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 {
+$uid = \Drupal::currentUser()->id();
+$user_entity = User::load($uid);
 
   $kcal_tot = 0;
   $protein_tot = 0;
@@ -230,14 +273,14 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state)
 
   foreach ($fields_map as $fname => $val) {
     if (isset($form['mio_pasto_nutrition_wrapper'][$fname])) {
-      if (isset($form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value'])) {
-        $form['mio_pasto_nutrition_wrapper'][$fname]['widget'][0]['value']['#value'] = (string) round($val, 2);
+      if (isset($form['mio_pasto_nutrition_wrapper'][$fname]['pasto_field']['widget'][0]['value'])) {
+        $form['mio_pasto_nutrition_wrapper'][$fname]['pasto_field']['widget'][0]['value']['#value'] = (string) round($val, 2);
       }
-      elseif (isset($form['mio_pasto_nutrition_wrapper'][$fname][0]['value'])) {
-        $form['mio_pasto_nutrition_wrapper'][$fname][0]['value']['#value'] = (string) round($val, 2);
+      elseif (isset($form['mio_pasto_nutrition_wrapper']['pasto_field'][$fname][0]['value'])) {
+        $form['mio_pasto_nutrition_wrapper']['pasto_field'][$fname][0]['value']['#value'] = (string) round($val, 2);
       }
-      elseif (isset($form['mio_pasto_nutrition_wrapper'][$fname]['#markup'])) {
-        $form['mio_pasto_nutrition_wrapper'][$fname]['#markup'] = (string) round($val, 2);
+      elseif (isset($form['mio_pasto_nutrition_wrapper']['pasto_field'][$fname]['#markup'])) {
+        $form['mio_pasto_nutrition_wrapper']['pasto_field'][$fname]['#markup'] = (string) round($val, 2);
       }
     }
   }
