@@ -1,0 +1,16 @@
+#edit-field-tipo-pasto {
+    display: flex;
+}
+
+#edit-field-tipo-pasto .form-item--field-tipo-pasto {
+    margin-right: 1rem;
+}
+
+#mio-pasto-nutrition-wrapper .nutrition-field-pair {
+    display: flex;
+    align-items: center;
+}
+
+#mio-pasto-nutrition-wrapper .nutrition-field-pair .user-target {
+    margin-left: 1rem;
+}
