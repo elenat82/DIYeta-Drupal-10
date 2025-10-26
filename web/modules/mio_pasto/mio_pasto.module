@@ -76,10 +76,12 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
       }
 
       // Crea il contenitore combinato.
+      $pasto_field = $form[$fname];
+      $pasto_field['#weight'] = 0; //per fare in modo che sia prima dello user target
       $form['mio_pasto_nutrition_wrapper'][$fname] = [
         '#type' => 'container',
         '#attributes' => ['class' => ['nutrition-field-pair']],
-        'pasto_field' => $form[$fname],
+        'pasto_field' => $pasto_field,
         'user_target' => $user_target
       ];
 
