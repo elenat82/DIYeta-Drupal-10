@@ -1,58 +1,142 @@
+/*-------------- TO DO LIST IN USER PAGE ---------------*/
 .todo-loader {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-left: 6px;
-    border: 2px solid #ccc;
-    border-top: 2px solid #0074bd;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    vertical-align: middle;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 6px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #0074bd;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
 
-  .bmi-wrapper { margin: 1rem 0; font-family: system-ui, sans-serif; }
-  .bmi-info { margin-bottom: 0.5rem; font-size: 0.95rem; color: #222; }
-  
-  .bmi-bar {
-    display: flex;
-    position: relative;
-    height: 48px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    font-size: 12px;
-    text-align: center;
-    align-items: center;
+  100% {
+    transform: rotate(360deg);
   }
-  .bmi-segment { flex: 1; display: flex; align-items: center; justify-content: center; color: #fff; padding: 6px; box-sizing: border-box; }
-  .bmi-underweight { background: #3b82f6; } /* blu */
-  .bmi-normal { background: #22c55e; }      /* verde */
-  .bmi-overweight { background: #eab308; }  /* giallo */
-  .bmi-obese { background: #ef4444; }       /* rosso */
-  
-  /* Indicatore */
-  .bmi-indicator {
-    position: relative;
-    margin-top: -34px; /* solleva l'indicatore sopra la barra; regola se serve */
-    width: 0;
-    pointer-events: none;
-  }
-  .bmi-indicator-arrow {
-    transform: translateX(-50%);
-    position: absolute;
-    left: 50%;
-    top: -18px;
-    font-size: 20px;
-    color: #000;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.6);
-  }
-  
-  /* opzionale: etichette piccole dentro i segmenti */
-  .bmi-segment span { display:block; line-height:1; text-shadow: 0 1px 0 rgba(0,0,0,0.1); }
-  .bmi-segment small { display:block; font-size:10px; opacity:0.95; color: rgba(255,255,255,0.95); }
-  
+}
+
+/*------------------ BMI IN USER PAGE ----------------------*/
+
+.bmi-wrapper {
+  margin: 1rem 0;
+  font-family: system-ui, sans-serif;
+}
+
+.bmi-info {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #222;
+}
+
+.bmi-bar {
+  display: flex;
+  position: relative;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  font-size: 12px;
+  text-align: center;
+  align-items: center;
+}
+
+.bmi-segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.bmi-underweight {
+  background: #3b82f6;
+}
+
+.bmi-normal {
+  background: #22c55e;
+}
+
+.bmi-overweight {
+  background: #eab308;
+}
+
+.bmi-obese {
+  background: #ef4444;
+}
+
+.bmi-indicator {
+  position: relative;
+  margin-top: -34px;
+  width: 0;
+  pointer-events: none;
+}
+
+.bmi-indicator-arrow {
+  transform: translateX(-50%);
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  font-size: 20px;
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.bmi-segment span {
+  display: block;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.bmi-segment small {
+  display: block;
+  font-size: 10px;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/*---------------- VISTA ALIMENTI --------------*/
+
+.view-alimenti .view-content > ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+.view-alimenti .view-content > ul li {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+/*-------------- VISTE PASTI ------------------*/
+
+.view-id-colazioni .view-content,
+.view-id-spuntini .view-content,
+.view-id-pranzi .view-content,
+.view-id-cene .view-content,
+.view-id-extra .view-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.view-id-colazioni .view-content .views-row,
+.view-id-spuntini .view-content .views-row,
+.view-id-pranzi .view-content .views-row,
+.view-id-cene .view-content .views-row,
+.view-id-extra .view-content .views-row {
+  background-color: #f1f1f1;
+  border: 1px solid #727272;
+  border-radius: 5px;
+  padding: 1rem;
+  width: 29%; /*sistemare*/
+}
+
