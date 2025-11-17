@@ -118,7 +118,7 @@
 
 /*-------------- VISTE PASTI ------------------*/
 
-.view-id-colazioni .view-content,
+/* .view-id-colazioni .view-content,
 .view-id-spuntini .view-content,
 .view-id-pranzi .view-content,
 .view-id-cene .view-content,
@@ -133,10 +133,10 @@
 .view-id-pranzi .view-content .views-row,
 .view-id-cene .view-content .views-row,
 .view-id-extra .view-content .views-row {
-  background-color: #f1f1f1;
-  border: 1px solid #727272;
+  background-color: #f6f9f8;
+  border: 1px solid #e0e0e0;
   border-radius: 5px;
   padding: 1rem;
-  width: 29%; /*sistemare*/
-}
+  width: 29%; 
+} */
 

@@ -9,4 +9,9 @@
     {{ row._entity.field_stato_attivita.value ? 'completata' : 'da fare' }}
   </span>
   <span class="todo-loader" style="display:none;"></span>
+  <a href="{{ path('entity.node.edit_form', {'node': row._entity.id}) }}"
+     class="todo-edit-link"
+     title="Modifica attività">
+    ✏️
+  </a>
 </label>
