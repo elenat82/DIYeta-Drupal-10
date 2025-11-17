@@ -8,12 +8,24 @@
         "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
         "chat": "https://www.drupal.org/node/314178"
     },
-    "repositories": [
-        {
+    "repositories": {
+        "tiny_slider": {
+            "type": "package",
+            "package": {
+                "name": "ganlanyuan/tiny-slider",
+                "version": "2.9.3",
+                "type": "drupal-library",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/ganlanyuan/tiny-slider/archive/refs/tags/v2.9.3.zip"
+                }
+            }
+        },
+        "0": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
-    ],
+    },
     "require": {
         "composer/installers": "^2.0",
         "drupal/admin_toolbar": "^3.6",
@@ -24,16 +36,19 @@
         "drupal/core-composer-scaffold": "^10.5",
         "drupal/core-project-message": "^10.5",
         "drupal/core-recommended": "^10.5",
+        "drupal/custom_login_url": "^2.0",
         "drupal/devel": "^5.4",
         "drupal/field_group": "^4.0",
         "drupal/inline_entity_form": "^3.0@RC",
         "drupal/libraries": "^4.1",
         "drupal/paragraphs": "^1.19",
         "drupal/rules": "^4.0",
+        "drupal/tiny_slider": "^1.1@RC",
         "drupal/token": "^1.15",
         "drupal/twig_field": "^2.0",
         "drupal/views_entity_form_field": "^1.0@beta",
         "drush/drush": "^13.6",
+        "ganlanyuan/tiny-slider": "^2.9",
         "kint-php/kint": "^6.0"
     },
     "conflict": {

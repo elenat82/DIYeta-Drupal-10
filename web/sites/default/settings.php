@@ -897,3 +897,7 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
+/**
+* Redefine the login base url.
+*/
+$settings['custom_login_pattern'] = 'diyeta-user';
