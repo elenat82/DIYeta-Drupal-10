@@ -1,0 +1,10 @@
+simple-carousel:
+  css:
+    theme:
+      css/simple-carousel.css: {}
+  js:
+    js/simple-carousel.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once

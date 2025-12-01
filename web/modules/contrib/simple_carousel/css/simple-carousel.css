@@ -1,0 +1,153 @@
+.simple-carousel {
+  position: relative;
+}
+
+.simple-carousel-inner {
+  display: flex;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+  list-style: none;
+  padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+}
+
+.simple-carousel-item {
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+
+/* Buttons */
+.simple-carousel-button {
+  position: absolute;
+  top: 0;
+  width: 5rem;
+  height: 100%;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.simple-carousel-button a {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #999;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 3rem;
+  border-radius: 100%;
+  opacity: 0.5;
+  text-decoration: none;
+  transform: rotate(0deg);
+}
+
+.simple-carousel-button.button--previous {
+  left: 0;
+}
+
+.simple-carousel-button.button--next {
+  right: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+
+/* Dynamic width adjustments based on items per viewport class */
+.items-per-viewport-1 .simple-carousel-item {
+  min-width: 100%;
+}
+
+.items-per-viewport-2 .simple-carousel-item {
+  min-width: 50%;
+}
+
+.items-per-viewport-3 .simple-carousel-item {
+  min-width: 33.33%;
+}
+
+.items-per-viewport-4 .simple-carousel-item {
+  min-width: 25%;
+}
+
+.items-per-viewport-5 .simple-carousel-item {
+  min-width: 20%;
+}
+
+.items-per-viewport-6 .simple-carousel-item {
+  min-width: 16.66%;
+}
+
+/* Responsive adjustments based on items per viewport */
+
+/* Xtra-small */
+@media (max-width: 575px) {
+  .items-per-viewport-2 .simple-carousel-item,
+  .items-per-viewport-3 .simple-carousel-item,
+  .items-per-viewport-4 .simple-carousel-item,
+  .items-per-viewport-5 .simple-carousel-item {
+    min-width: 100%;
+  }
+  .items-per-viewport-6 .simple-carousel-item {
+    min-width: 50%;
+  }
+  .simple-carousel-button.button--next {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 90%);
+  }
+}
+
+/* Small */
+@media (min-width: 576px) and (max-width: 767px) {
+  .items-per-viewport-2 .simple-carousel-item,
+  .items-per-viewport-3 .simple-carousel-item {
+    min-width: 100%;
+  }
+  .items-per-viewport-4 .simple-carousel-item,
+  .items-per-viewport-5 .simple-carousel-item {
+    min-width: 50%;
+  }
+  .items-per-viewport-6 .simple-carousel-item {
+    min-width: 33.33%;
+  }
+  .simple-carousel-button.button--next {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 100%);
+  }
+}
+
+/* Medium */
+@media (min-width: 768px) and (max-width: 991px) {
+  .items-per-viewport-3 .simple-carousel-item {
+    min-width: 50%;
+  }
+  .items-per-viewport-4 .simple-carousel-item,
+  .items-per-viewport-5 .simple-carousel-item {
+    min-width: 33.33%;
+  }
+  .items-per-viewport-6 .simple-carousel-item {
+    min-width: 25%;
+  }
+  .simple-carousel-button.button--next {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 100%);
+  }
+}
+
+/* Large */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .items-per-viewport-4 .simple-carousel-item {
+    min-width: 33.33%;
+  }
+  .items-per-viewport-5 .simple-carousel-item {
+    min-width: 25%;
+  }
+  .items-per-viewport-6 .simple-carousel-item {
+    min-width: 20%;
+  }
+}
+
+/* X-Large */
+@media (min-width: 1200px) {
+}

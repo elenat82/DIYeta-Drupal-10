@@ -1,0 +1,20 @@
+name: 'Simple Carousel'
+type: module
+description: 'Provides a simple carousel view style plugin.'
+core_version_requirement: ^9 || ^10
+package: Views
+dependencies:
+  - drupal:views
+
+libraries:
+  simple_carousel/simple-carousel:
+    css:
+      theme:
+        css/simple-carousel.css: {}
+    js:
+      js/simple-carousel.js: {}
+
+# Information added by Drupal.org packaging script on 2024-06-27
+version: '1.0.3'
+project: 'simple_carousel'
+datestamp: 1719506902

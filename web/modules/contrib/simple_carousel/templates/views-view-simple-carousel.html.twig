@@ -1,0 +1,15 @@
+{{ attach_library('simple_carousel/simple-carousel') }}
+
+<div id="simple-carousel-{{ view.id }}" class="simple-carousel {{ wrapper_classes }}">
+  <ul class="simple-carousel-inner">
+    {% for row in rows %}
+      <li class="simple-carousel-item {{ item_classes }}">{{ row.content }}</li>
+    {% endfor %}
+  </ul>
+  <div class="simple-carousel-button button--previous">
+    <a type="button">{{ prev_button_text }}</a>
+  </div>
+  <div class="simple-carousel-button button--next">
+    <a type="button">{{ next_button_text }}</a>
+  </div>
+</div>

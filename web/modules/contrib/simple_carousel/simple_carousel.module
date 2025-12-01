@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function simple_carousel_theme($existing, $type, $theme, $path) {
+    return [
+      'views_view_simple_carousel' => [
+        'render element' => 'elements',
+        'base hook' => 'views_view',
+        'variables' => [
+          'wrapper_classes' => '',
+          'item_classes' => '',
+          'prev_button_text' => '',
+          'next_button_text' => '',
+        ],
+      ],
+    ];
+  }

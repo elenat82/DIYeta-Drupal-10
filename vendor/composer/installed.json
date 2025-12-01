@@ -1587,6 +1587,76 @@
             "install-path": "../../web/modules/contrib/auto_entitylabel"
         },
         {
+            "name": "drupal/blazy",
+            "version": "3.0.15",
+            "version_normalized": "3.0.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/blazy.git",
+                "reference": "3.0.15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/blazy-3.0.15.zip",
+                "reference": "3.0.15",
+                "shasum": "9464e029679a3bf3ef811865eb859f6789294590"
+            },
+            "require": {
+                "drupal/core": ">=9.4"
+            },
+            "conflict": {
+                "drupal/csp": "<1.12"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "3.0.15",
+                    "datestamp": "1760528174",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "installation-source": "dist",
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Gaus Surahman",
+                    "homepage": "https://www.drupal.org/u/gausarts",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://www.drupal.org/node/2663268/committers",
+                    "role": "Contributor"
+                },
+                {
+                    "name": "geek-merlin",
+                    "homepage": "https://www.drupal.org/user/229048"
+                },
+                {
+                    "name": "sun",
+                    "homepage": "https://www.drupal.org/user/54136"
+                }
+            ],
+            "description": "Provides basic bLazy integration for lazy loading and multi-serving images.",
+            "homepage": "https://drupal.org/project/blazy",
+            "keywords": [
+                "Drupal",
+                "bLazy",
+                "lazyload"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/blazy",
+                "issues": "https://drupal.org/project/issues/blazy"
+            },
+            "install-path": "../../web/modules/contrib/blazy"
+        },
+        {
             "name": "drupal/charts",
             "version": "5.1.7",
             "version_normalized": "5.1.7.0",
@@ -2952,93 +3022,64 @@
             "install-path": "../../web/modules/contrib/scroll_top_button"
         },
         {
-            "name": "drupal/tiny_slider",
-            "version": "1.1.0-rc5",
-            "version_normalized": "1.1.0.0-RC5",
+            "name": "drupal/splide",
+            "version": "2.0.12",
+            "version_normalized": "2.0.12.0",
             "source": {
                 "type": "git",
-                "url": "https://git.drupalcode.org/project/tiny_slider.git",
-                "reference": "1.1.0-rc5"
+                "url": "https://git.drupalcode.org/project/splide.git",
+                "reference": "2.0.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/tiny_slider-1.1.0-rc5.zip",
-                "reference": "1.1.0-rc5",
-                "shasum": "d58a46cdfedcace2d129906718a97ffdd8db87cf"
+                "url": "https://ftp.drupal.org/files/projects/splide-2.0.12.zip",
+                "reference": "2.0.12",
+                "shasum": "418a1945849b176ff274c7ca527037739e6bc629"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10"
+                "drupal/blazy": "^2.17 || ^3.0.1",
+                "drupal/core": ">=8.8"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.1.0-rc5",
-                    "datestamp": "1749338301",
+                    "version": "2.0.12",
+                    "datestamp": "1729740947",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "RC releases are not covered by Drupal security advisories."
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": "^10"
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
             "installation-source": "dist",
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
-                    "name": "belazoth",
-                    "homepage": "https://www.drupal.org/user/3397316"
+                    "name": "Gaus Surahman",
+                    "homepage": "https://www.drupal.org/user/159062",
+                    "role": "Maintainer"
                 },
                 {
-                    "name": "cedrichillion",
-                    "homepage": "https://www.drupal.org/user/3091823"
-                },
-                {
-                    "name": "danielzigo",
-                    "homepage": "https://www.drupal.org/user/3569258"
-                },
-                {
-                    "name": "endrukk",
-                    "homepage": "https://www.drupal.org/user/3669887"
-                },
-                {
-                    "name": "hebl",
-                    "homepage": "https://www.drupal.org/user/3688118"
-                },
-                {
-                    "name": "ipwa",
-                    "homepage": "https://www.drupal.org/user/130909"
-                },
-                {
-                    "name": "Lisa-Webster",
-                    "homepage": "https://www.drupal.org/user/3682291"
-                },
-                {
-                    "name": "paul.moloney",
-                    "homepage": "https://www.drupal.org/user/274172"
-                },
-                {
-                    "name": "welly",
-                    "homepage": "https://www.drupal.org/user/354705"
-                },
-                {
-                    "name": "xiwar",
-                    "homepage": "https://www.drupal.org/user/3309931"
+                    "name": "Contributors",
+                    "homepage": "https://www.drupal.org/node/3215092/committers",
+                    "role": "Contributor"
                 }
             ],
-            "description": "Drupal integration for Tiny Slider",
-            "homepage": "https://www.drupal.org/project/tiny_slider",
+            "description": "Splide, the JavaScript Slider.",
+            "homepage": "https://drupal.org/project/splide",
+            "keywords": [
+                "Drupal",
+                "carousel",
+                "slideshow"
+            ],
             "support": {
-                "source": "https://git.drupalcode.org/project/tiny_slider",
-                "issues": "https://www.drupal.org/project/issues/tiny_slider"
+                "source": "https://git.drupalcode.org/project/splide",
+                "issues": "https://drupal.org/project/issues/splide"
             },
-            "install-path": "../../web/modules/contrib/tiny_slider"
+            "install-path": "../../web/modules/contrib/splide"
         },
         {
             "name": "drupal/token",
@@ -3501,18 +3542,6 @@
                 }
             ],
             "install-path": "../egulias/email-validator"
-        },
-        {
-            "name": "ganlanyuan/tiny-slider",
-            "version": "2.9.3",
-            "version_normalized": "2.9.3.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/ganlanyuan/tiny-slider/archive/refs/tags/v2.9.3.zip"
-            },
-            "type": "drupal-library",
-            "installation-source": "dist",
-            "install-path": "../../web/libraries/tiny-slider"
         },
         {
             "name": "grasmash/expander",

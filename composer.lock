@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48d712a2c2e89281b8996b0439704a73",
+    "content-hash": "385e8c51a12b8f41ce6ab813b71329aa",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1530,6 +1530,73 @@
             }
         },
         {
+            "name": "drupal/blazy",
+            "version": "3.0.15",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/blazy.git",
+                "reference": "3.0.15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/blazy-3.0.15.zip",
+                "reference": "3.0.15",
+                "shasum": "9464e029679a3bf3ef811865eb859f6789294590"
+            },
+            "require": {
+                "drupal/core": ">=9.4"
+            },
+            "conflict": {
+                "drupal/csp": "<1.12"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "3.0.15",
+                    "datestamp": "1760528174",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Gaus Surahman",
+                    "homepage": "https://www.drupal.org/u/gausarts",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://www.drupal.org/node/2663268/committers",
+                    "role": "Contributor"
+                },
+                {
+                    "name": "geek-merlin",
+                    "homepage": "https://www.drupal.org/user/229048"
+                },
+                {
+                    "name": "sun",
+                    "homepage": "https://www.drupal.org/user/54136"
+                }
+            ],
+            "description": "Provides basic bLazy integration for lazy loading and multi-serving images.",
+            "homepage": "https://drupal.org/project/blazy",
+            "keywords": [
+                "Drupal",
+                "bLazy",
+                "lazyload"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/blazy",
+                "issues": "https://drupal.org/project/issues/blazy"
+            }
+        },
+        {
             "name": "drupal/charts",
             "version": "5.1.7",
             "source": {
@@ -2839,89 +2906,60 @@
             }
         },
         {
-            "name": "drupal/tiny_slider",
-            "version": "1.1.0-rc5",
+            "name": "drupal/splide",
+            "version": "2.0.12",
             "source": {
                 "type": "git",
-                "url": "https://git.drupalcode.org/project/tiny_slider.git",
-                "reference": "1.1.0-rc5"
+                "url": "https://git.drupalcode.org/project/splide.git",
+                "reference": "2.0.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/tiny_slider-1.1.0-rc5.zip",
-                "reference": "1.1.0-rc5",
-                "shasum": "d58a46cdfedcace2d129906718a97ffdd8db87cf"
+                "url": "https://ftp.drupal.org/files/projects/splide-2.0.12.zip",
+                "reference": "2.0.12",
+                "shasum": "418a1945849b176ff274c7ca527037739e6bc629"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10"
+                "drupal/blazy": "^2.17 || ^3.0.1",
+                "drupal/core": ">=8.8"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.1.0-rc5",
-                    "datestamp": "1749338301",
+                    "version": "2.0.12",
+                    "datestamp": "1729740947",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "RC releases are not covered by Drupal security advisories."
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": "^10"
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
-                    "name": "belazoth",
-                    "homepage": "https://www.drupal.org/user/3397316"
+                    "name": "Gaus Surahman",
+                    "homepage": "https://www.drupal.org/user/159062",
+                    "role": "Maintainer"
                 },
                 {
-                    "name": "cedrichillion",
-                    "homepage": "https://www.drupal.org/user/3091823"
-                },
-                {
-                    "name": "danielzigo",
-                    "homepage": "https://www.drupal.org/user/3569258"
-                },
-                {
-                    "name": "endrukk",
-                    "homepage": "https://www.drupal.org/user/3669887"
-                },
-                {
-                    "name": "hebl",
-                    "homepage": "https://www.drupal.org/user/3688118"
-                },
-                {
-                    "name": "ipwa",
-                    "homepage": "https://www.drupal.org/user/130909"
-                },
-                {
-                    "name": "Lisa-Webster",
-                    "homepage": "https://www.drupal.org/user/3682291"
-                },
-                {
-                    "name": "paul.moloney",
-                    "homepage": "https://www.drupal.org/user/274172"
-                },
-                {
-                    "name": "welly",
-                    "homepage": "https://www.drupal.org/user/354705"
-                },
-                {
-                    "name": "xiwar",
-                    "homepage": "https://www.drupal.org/user/3309931"
+                    "name": "Contributors",
+                    "homepage": "https://www.drupal.org/node/3215092/committers",
+                    "role": "Contributor"
                 }
             ],
-            "description": "Drupal integration for Tiny Slider",
-            "homepage": "https://www.drupal.org/project/tiny_slider",
+            "description": "Splide, the JavaScript Slider.",
+            "homepage": "https://drupal.org/project/splide",
+            "keywords": [
+                "Drupal",
+                "carousel",
+                "slideshow"
+            ],
             "support": {
-                "source": "https://git.drupalcode.org/project/tiny_slider",
-                "issues": "https://www.drupal.org/project/issues/tiny_slider"
+                "source": "https://git.drupalcode.org/project/splide",
+                "issues": "https://drupal.org/project/issues/splide"
             }
         },
         {
@@ -3367,67 +3405,6 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
-        },
-        {
-            "name": "ganlanyuan/tiny-slider",
-            "version": "2.9.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/ganlanyuan/tiny-slider/archive/refs/tags/v2.9.3.zip"
-            },
-            "type": "drupal-library"
-        },
-        {
-            "name": "grasmash/expander",
-            "version": "3.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/grasmash/expander.git",
-                "reference": "eea11b9afb0c32483b18b9009f4ca07b770e39f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/grasmash/expander/zipball/eea11b9afb0c32483b18b9009f4ca07b770e39f4",
-                "reference": "eea11b9afb0c32483b18b9009f4ca07b770e39f4",
-                "shasum": ""
-            },
-            "require": {
-                "dflydev/dot-access-data": "^3.0.0",
-                "php": ">=8.0",
-                "psr/log": "^2 | ^3"
-            },
-            "require-dev": {
-                "greg-1-anderson/composer-test-scenarios": "^1",
-                "php-coveralls/php-coveralls": "^2.5",
-                "phpunit/phpunit": "^9",
-                "squizlabs/php_codesniffer": "^3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Grasmash\\Expander\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matthew Grasmick"
-                }
-            ],
-            "description": "Expands internal property references in PHP arrays file.",
-            "support": {
-                "issues": "https://github.com/grasmash/expander/issues",
-                "source": "https://github.com/grasmash/expander/tree/3.0.1"
-            },
-            "time": "2024-11-25T23:28:05+00:00"
         },
         {
             "name": "grasmash/yaml-cli",
@@ -7783,7 +7760,6 @@
     "stability-flags": {
         "drupal/conditional_fields": 15,
         "drupal/inline_entity_form": 5,
-        "drupal/tiny_slider": 5,
         "drupal/views_entity_form_field": 10
     },
     "prefer-stable": true,
