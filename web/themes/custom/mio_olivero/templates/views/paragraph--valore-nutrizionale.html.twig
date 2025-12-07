@@ -11,18 +11,18 @@
   {% if unit == 'per_100g' %}
     <h4>Valori per 100 g</h4>
   {% elseif unit == 'per_porzione' %}
-    <h4>Valori per porzione</h4>
+    <h4>Valori per porzione
     {% if porzione_descr %}
-      <div class="porzione">
-        <small>{{ porzione_descr }}</small>
-      </div>
-    {% endif %}
+      <span class="porzione">
+        ({{ porzione_descr }})
+      </span>
+    {% endif %}</h4>
   {% endif %}
 
   <ul class="macros">
-    <li>Kcal: {{ kcal }}</li>
-    <li>Proteine: {{ prot }} g</li>
-    <li>Grassi: {{ grassi }} g</li>
-    <li>Carboidrati: {{ carbo }} g</li>
+    <li class="nutriente" data-label="Kcal"><i class="fa-solid fa-fire icon-fire"></i> {{ kcal }}</li>
+    <li class="nutriente" data-label="Proteine"><i class="fa-solid fa-drumstick-bite icon-protein"></i> {{ prot }} g</li>
+    <li class="nutriente" data-label="Grassi"><i class="fa-solid fa-bacon icon-fat"></i> {{ grassi }} g</li>
+    <li class="nutriente" data-label="Carboidrati"><i class="fa-solid fa-bread-slice icon-carbs"></i> {{ carbo }} g</li>
   </ul>
 </div>
