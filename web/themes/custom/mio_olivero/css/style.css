@@ -188,27 +188,31 @@
 .view-colazioni .alimento-row,
 .view-spuntini .alimento-row,
 .view-pranzi .alimento-row,
-.view-cene .alimento-row {
+.view-cene .alimento-row,
+.view-extra .alimento-row {
   display: flex;
 }
 
 .view-colazioni .alimento-row .left,
 .view-spuntini .alimento-row .left,
 .view-pranzi .alimento-row .left,
-.view-cene .alimento-row .left {
+.view-cene .alimento-row .left,
+.view-extra .alimento-row .left {
   width: 50%;
 }
 
 .view-colazioni .alimento-row .left h3,
 .view-spuntini .alimento-row .left h3,
 .view-pranzi .alimento-row .left h3,
-.view-cene .alimento-row .left h3 {
+.view-cene .alimento-row .left h3,
+.view-extra .alimento-row .left h3 {
   margin-bottom: 1rem;
 }
 .view-colazioni .alimento-row .left > ul,
 .view-spuntini .alimento-row .left > ul,
 .view-pranzi .alimento-row .left > ul,
-.view-cene .alimento-row .left > ul {
+.view-cene .alimento-row .left > ul,
+.view-extra .alimento-row .left > ul {
   margin: 0;
   flex-grow: 1;
   flex-shrink: 1;
@@ -221,7 +225,8 @@
 .view-colazioni .alimento-row .left > ul li,
 .view-spuntini .alimento-row .left > ul li,
 .view-pranzi .alimento-row .left > ul li,
-.view-cene .alimento-row .left > ul li {
+.view-cene .alimento-row .left > ul li,
+.view-extra .alimento-row .left > ul li {
   display: flex;
   margin-bottom: 1.rem;
   width: 100%;
@@ -232,9 +237,11 @@
 .view-spuntini .alimento-row .left > ul li .field--name-field-alimento,
 .view-spuntini .alimento-row .left > ul li .field--name-field-alimento-per-porzione,
 .view-pranzi .alimento-row .left > ul li .field--name-field-alimento,
-.view-pranzi .alimento-row -left > ul li .field--name-field-alimento-per-porzione,
+.view-pranzi .alimento-row .left > ul li .field--name-field-alimento-per-porzione,
 .view-cene .alimento-row .left > ul li .field--name-field-alimento,
-.view-cene .alimento-row .left > ul li .field--name-field-alimento-per-porzione {
+.view-cene .alimento-row .left > ul li .field--name-field-alimento-per-porzione,
+.view-extra .alimento-row .left > ul li .field--name-field-alimento,
+.view-extra .alimento-row .left > ul li .field--name-field-alimento-per-porzione {
   display: flex;
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
@@ -248,7 +255,9 @@
 .view-pranzi .alimento-row .left > ul li .field--name-field-quantita-in-grammi,
 .view-pranzi .alimento-row .left > ul li .field--name-field-numero-porzioni,
 .view-cene .alimento-row .left > ul li .field--name-field-quantita-in-grammi,
-.view-cene .alimento-row .left > ul li .field--name-field-numero-porzioni 
+.view-cene .alimento-row .left > ul li .field--name-field-numero-porzioni,
+.view-extra .alimento-row .left > ul li .field--name-field-quantita-in-grammi,
+.view-extra .alimento-row .left > ul li .field--name-field-numero-porzioni 
  {
   display: flex;
   width: 40%;
@@ -257,14 +266,16 @@
 .view-colazioni .alimento-row .right .macros,
 .view-spuntini .alimento-row .right .macros,
 .view-pranzi .alimento-row .right .macros,
-.view-cene .alimento-row .right .macros {
+.view-cene .alimento-row .right .macros,
+.view-extra .alimento-row .right .macros {
   list-style-type: none;
 }
 
 .view-colazioni .alimento-row .right .macros li,
 .view-spuntini .alimento-row .right .macros li,
 .view-pranzi .alimento-row .right .macros li,
-.view-cene .alimento-row .right .macros li {
+.view-cene .alimento-row .right .macros li,
+.view-extra .alimento-row .right .macros li {
   margin-bottom: 1rem;
 }
 
