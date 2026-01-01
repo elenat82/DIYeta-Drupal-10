@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\user\Entity\User;
+use Drupal\node\NodeInterface;
+
 /**
  * Implements hook_preprocess_block().
  */
@@ -41,3 +44,47 @@ function mio_olivero_preprocess_field(&$variables) {
     }
   }
 }
+
+
+function mio_olivero_preprocess_views_view_fields(array &$variables)
+{
+
+  if ($variables['view']->id() === 'colazioni' || $variables['view']->id() === 'spuntini' ||$variables['view']->id() === 'pranzi' || $variables['view']->id() === 'cene' || $variables['view']->id() === 'extra') {
+    $user = \Drupal::currentUser();
+    $account = User::load($user->id());
+
+    $pasto = $variables['row']->_entity;
+    
+    // Target utente (%)
+    $target = [
+      'carbo' => (float) $account->get('field_percentuale_carboidrati')->value,
+      'proteine' => (float) $account->get('field_percentuale_proteine')->value,
+      'grassi' => (float) $account->get('field_percentuale_grassi')->value,
+    ];
+    
+    // Macros del pasto
+    $macro_percent = [
+      'grassi' => (float) $pasto->get('field_percentuale_grassi')->value,
+      'carbo' => (float) $pasto->get('field_percentuale_carboidrati')->value,
+      'proteine' => (float) $pasto->get('field_percentuale_proteine')->value,
+    ];
+
+    // Calcoli 
+    foreach ($macro_percent as $key => $percent) {
+      $t = $target[$key];
+
+      $within = min($percent, $t);           // fino al target
+      $over = max(0, $percent - $t);         // solo l'eccesso
+
+      $variables['macro'][$key] = [
+        'value' => $percent,                  // percentuale reale del pasto
+        'target' => $t,                       // target utente
+        'within' => ($t > 0 ? ($within / $t * 100) : 0), // scala 0-100%
+        'over' => ($t > 0 ? ($over / $t * 100) : 0),     // solo over
+      ];
+    }
+
+  }
+}
+
+

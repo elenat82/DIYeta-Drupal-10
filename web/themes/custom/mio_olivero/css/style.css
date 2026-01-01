@@ -277,8 +277,24 @@
 .view-cene .alimento-row .right .macros li,
 .view-extra .alimento-row .right .macros li {
   margin-bottom: 1rem;
+  position: relative;
 }
 
+.view-colazioni .alimento-row .right .macros li:hover::after,
+.view-spuntini .alimento-row .right .macros li:hover::after,
+.view-pranzi .alimento-row .right .macros li:hover::after,
+.view-cene .alimento-row .right .macros li:hover::after,
+.view-extra .alimento-row .right .macros li:hover::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background-color: #333;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  z-index: 1000;
+}
 /* Icon colors for macronutrients */
 .icon-fire {
   color: #ef4444; /* Rosso */
@@ -298,4 +314,21 @@
 
 .icon-marca {
   color: var(--color--gray-45);
+}
+
+.macro-bar {
+  display: flex;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.macro-bar-ok {
+  background: #4caf50;
+}
+
+.macro-bar-over {
+  background: #f44336;
 }

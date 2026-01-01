@@ -9,12 +9,42 @@
       <div class="valore nutrizionale">
         <h4>Valori nutrizionali:</h4>
         <ul class="macros">
-          <li class="nutriente" data-label="Grassi"><i class="fa-solid fa-bacon icon-fat"></i>
-            {{fields.field_grassi_pasto.content}} ({{fields.field_percentuale_grassi.content}}%)</li>
-          <li class="nutriente" data-label="Carboidrati"><i class="fa-solid fa-bread-slice icon-carbs"></i>
-            {{fields.field_carboidrati_pasto.content}} ({{fields.field_percentuale_carboidrati.content}}%)</li>
-          <li class="nutriente" data-label="Proteine"><i class="fa-solid fa-drumstick-bite icon-protein"></i>
-            {{fields.field_proteine_pasto.content}} ({{fields.field_percentuale_proteine.content}}%)</li>
+          <li class="nutriente nutriente-grassi" data-label="Grassi: {{ macro.grassi.value|number_format(1) }}/{{ macro.grassi.target }}%">
+            <i class="fa-solid fa-bacon icon-fat"></i>
+            {{fields.field_grassi_pasto.content}} ({{fields.field_percentuale_grassi.content}}%)
+            <div class="macro-bar">
+              <div class="macro-bar-ok" style="width: {{ macro.grassi.within }}%">
+              </div>
+              {% if macro.grassi.over > 0 %}
+              <div class="macro-bar-over" style="width: {{ macro.grassi.over }}%">
+              </div>
+              {% endif %}
+            </div>
+          </li>
+          <li class="nutriente nutriente-carbo" data-label="Carboidrati: {{ macro.carbo.value|number_format(1) }}/{{ macro.carbo.target }}%"><i
+              class="fa-solid fa-bread-slice icon-carbs"></i>
+            {{fields.field_carboidrati_pasto.content}} ({{fields.field_percentuale_carboidrati.content}}%)
+            <div class="macro-bar">
+              <div class="macro-bar-ok" style="width: {{ macro.carbo.within }}%">
+              </div>
+              {% if macro.carbo.over > 0 %}
+              <div class="macro-bar-over" style="width: {{ macro.carbo.over }}%">
+              </div>
+              {% endif %}
+            </div>
+          </li>
+          <li class="nutriente nutriente-proteine" data-label="Proteine: {{ macro.proteine.value|number_format(1) }}/{{ macro.proteine.target }}%"><i
+              class="fa-solid fa-drumstick-bite icon-protein"></i>
+            {{fields.field_proteine_pasto.content}} ({{fields.field_percentuale_proteine.content}}%)
+            <div class="macro-bar">
+              <div class="macro-bar-ok" style="width: {{ macro.proteine.within }}%">
+              </div>
+              {% if macro.proteine.over > 0 %}
+              <div class="macro-bar-over" style="width: {{ macro.proteine.over }}%">
+              </div>
+              {% endif %}
+            </div>
+          </li>
         </ul>
       </div>
     </div>
