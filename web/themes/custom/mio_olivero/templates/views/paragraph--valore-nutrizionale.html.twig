@@ -7,22 +7,52 @@
 {% set carbo = paragraph.field_carboidrati.value %}
 {% set porzione_descr = paragraph.field_porzione_descrizione.value %}
 
-<div class="valore-nutrizionale">
+<div class="valore-nutrizionale"
+     {% if unit == 'per_100g' %}
+       data-kcal="{{ kcal }}"
+       data-proteine="{{ prot }}"
+       data-grassi="{{ grassi }}"
+       data-carboidrati="{{ carbo }}"
+     {% endif %}
+>
+
   {% if unit == 'per_100g' %}
-    <h4>Valori per 100 g</h4>
+    <h4>
+      Valori per
+      <input type="number"
+             class="js-grammi"
+             value="100"
+             min="1"
+             step="1"> g
+    </h4>
   {% elseif unit == 'per_porzione' %}
-    <h4>Valori per porzione
-    {% if porzione_descr %}
-      <span class="porzione">
-        ({{ porzione_descr }})
-      </span>
-    {% endif %}</h4>
+    <h4>
+      Valori per porzione
+      {% if porzione_descr %}
+        <span class="porzione">({{ porzione_descr }})</span>
+      {% endif %}
+    </h4>
   {% endif %}
 
   <ul class="macros">
-    <li class="nutriente" data-label="Kcal"><i class="fa-solid fa-fire icon-fire"></i> {{ kcal }}</li>
-    <li class="nutriente" data-label="Proteine"><i class="fa-solid fa-drumstick-bite icon-protein"></i> {{ prot }} g</li>
-    <li class="nutriente" data-label="Grassi"><i class="fa-solid fa-bacon icon-fat"></i> {{ grassi }} g</li>
-    <li class="nutriente" data-label="Carboidrati"><i class="fa-solid fa-bread-slice icon-carbs"></i> {{ carbo }} g</li>
+    <li class="nutriente" data-label="Kcal">
+      <i class="fa-solid fa-fire icon-fire"></i>
+      <span class="js-kcal">{{ kcal }}</span>
+    </li>
+
+    <li class="nutriente" data-label="Proteine">
+      <i class="fa-solid fa-drumstick-bite icon-protein"></i>
+      <span class="js-proteine">{{ prot }}</span> g
+    </li>
+
+    <li class="nutriente" data-label="Grassi">
+      <i class="fa-solid fa-bacon icon-fat"></i>
+      <span class="js-grassi">{{ grassi }}</span> g
+    </li>
+
+    <li class="nutriente" data-label="Carboidrati">
+      <i class="fa-solid fa-bread-slice icon-carbs"></i>
+      <span class="js-carboidrati">{{ carbo }}</span> g
+    </li>
   </ul>
 </div>
