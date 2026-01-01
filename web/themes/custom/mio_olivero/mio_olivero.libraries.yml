@@ -4,5 +4,6 @@ global-styling:
       css/style.css: {}
   js:
     js/alimenti-calcolo.js: {}
+    js/alimenti-filter.js: {}
   dependencies:
     - core/drupal

@@ -184,6 +184,35 @@
   z-index: 10;
 }
 
+.alimenti-filter {
+  display: flex;
+  align-items: center;
+  color: var(--color--primary-30)
+}
+
+.alimenti-filter input {
+  width: 80%;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #888;
+  padding: 0.2rem 0.4rem;
+}
+
+.clear-button:hover {
+  color: #444;
+}
+
+
+
+
 /* -------------- VISTE PASTI ------------ */
 .view-colazioni .alimento-row,
 .view-spuntini .alimento-row,
@@ -326,9 +355,9 @@
 }
 
 .macro-bar-ok {
-  background: #4caf50;
+  background: var(--color-green);
 }
 
 .macro-bar-over {
-  background: #f44336;
+  background: var(--color-red);
 }

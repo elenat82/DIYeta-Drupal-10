@@ -1,0 +1,54 @@
+{%
+  set classes = [
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+    'view-alimenti',
+    'view-id-alimenti'
+  ]
+%}
+<div{{ attributes.addClass(classes) }}>
+  {{ title_prefix }}
+  {{ title }}
+  {{ title_suffix }}
+
+  <div class="view-content">
+
+    {# Input filtro #}
+    <div class="alimenti-filter">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input
+        type="text"
+        id="alimenti-filter-input"
+        placeholder="Cerca alimento..."
+        aria-label="Filtra alimenti"
+      >
+      <button type="button" class="clear-button" title="Reset filtro"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    {% if header %}
+      <header>
+        {{ header }}
+      </header>
+    {% endif %}
+
+    {{ exposed }}
+    {{ attachment_before }}
+
+    {% if rows -%}
+      {{ rows }}
+    {% elseif empty -%}
+      {{ empty }}
+    {% endif %}
+    {{ pager }}
+
+    {{ attachment_after }}
+    {{ more }}
+
+    {% if footer %}
+      <footer>
+        {{ footer }}
+      </footer>
+    {% endif %}
+
+    {{ feed_icons }}
+  </div>
+</div>

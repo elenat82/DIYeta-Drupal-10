@@ -1,5 +1,5 @@
 {# https://api.drupal.org/api/drupal/core%21themes%21stable9%21templates%21views%21views-view-fields.html.twig/10 #}
-<div class="alimento-row">
+<div class="alimento-row" data-nome="{{ fields.title.content|striptags|lower }}">
   <div class="left">
     <h3>{{ fields.title.content }}</h3>
     <div class="marca"><i class="fa-solid fa-tags icon-marca"></i> {{ fields.field_marca.content }}</div>
