@@ -355,9 +355,9 @@
 }
 
 .macro-bar-ok {
-  background: var(--color-green);
+  background: #4caf50;
 }
 
 .macro-bar-over {
-  background: var(--color-red);
+  background: #f44336;
 }
