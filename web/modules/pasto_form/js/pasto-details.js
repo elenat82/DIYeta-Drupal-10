@@ -14,8 +14,15 @@
         const formItem = radioButton.closest('.js-form-item.form-item');
         
         if (formItem) {
-          formItem.insertAdjacentElement('afterend', detailsDiv.cloneNode(true));
+          const clonedDetails = detailsDiv.cloneNode(true);
+          formItem.insertAdjacentElement('afterend', clonedDetails);
           detailsDiv.remove();
+          
+          // Aggiungi event listener al div dei dettagli clonato
+          clonedDetails.addEventListener('click', function () {
+            radioButton.checked = true;
+            radioButton.dispatchEvent(new Event('change', { bubbles: true }));
+          });
         }
       }
     });

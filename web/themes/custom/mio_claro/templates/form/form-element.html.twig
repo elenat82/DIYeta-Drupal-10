@@ -48,16 +48,12 @@
   %}
 
   {% if is_pasto %}
-    <div class="pasto-card">
-      <div class="pasto-radio">
-        {{ children }}
-      </div>
-      <div class="pasto-content">
-        {{ label }}
-      </div>
+  <div class="pasto-view">
+    <div class="pasto-radio">
+      {{ children }}
     </div>
-
-  {% else %}
+  </div>
+{% else %}
     {# ===== MARKUP ORIGINALE CLARO ===== #}
 
     {% if label_display in ['before', 'invisible'] %}
