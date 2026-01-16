@@ -1,0 +1,6 @@
+pasto-details:
+  js:
+    js/pasto-details.js: {}
+  css:
+    theme:
+      css/pasto-details.css: {}

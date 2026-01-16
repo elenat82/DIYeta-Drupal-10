@@ -1,0 +1,5 @@
+name: 'Pasto form'
+type: module
+description: 'Modulo per customizzare il pasto nel nodo giornata'
+package: Custom
+core_version_requirement: ^10 || ^11
