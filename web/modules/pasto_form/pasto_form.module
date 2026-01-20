@@ -31,7 +31,7 @@ function pasto_form_form_alter(
 
     foreach ($pasti_fields as $fname) {
       if (!empty($form[$fname]) && !empty($form[$fname]['widget']) && is_array($form[$fname]['widget'])) {
-        render_pasti_in_radio($form[$fname]['widget']);
+        render_pasti_in_radio($form[$fname]['widget'], $fname);
         if (!empty($form[$fname]['widget']['#pasto_details']) && is_array($form[$fname]['widget']['#pasto_details'])) {
           $all = implode('', $form[$fname]['widget']['#pasto_details']);
           $form[$fname]['pasti_details'] = [
@@ -48,7 +48,7 @@ function pasto_form_form_alter(
 /**
  * Sostituisce il label dei radio con il rendering del nodo Pasto.
  */
-function render_pasti_in_radio(array &$widget)
+function render_pasti_in_radio(array &$widget, $field_name = NULL)
 {
   $entity_type_manager = \Drupal::entityTypeManager();
   $view_builder = $entity_type_manager->getViewBuilder('node');
@@ -69,6 +69,7 @@ function render_pasti_in_radio(array &$widget)
 
       $nid = $pasto->id();
       
+      // Estrai i valori del pasto
       $kcal = $pasto->get('field_kcal_pasto')->value ?? 0;
       $carboidrati = $pasto->get('field_carboidrati_pasto')->value ?? 0;
       $grassi = $pasto->get('field_grassi_pasto')->value ?? 0;
@@ -76,6 +77,14 @@ function render_pasti_in_radio(array &$widget)
       $perc_carb = $pasto->get('field_percentuale_carboidrati')->value ?? 0;
       $perc_grassi = $pasto->get('field_percentuale_grassi')->value ?? 0;
       $perc_prot = $pasto->get('field_percentuale_proteine')->value ?? 0;
+      
+      // Estrai gli obiettivi dell'utente loggato
+      $current_user = \Drupal::currentUser();
+      $user = \Drupal\user\Entity\User::load($current_user->id());
+      $target_kcal_giornaliere = $user->get('field_kcal_giornaliere')->value ?? 0;
+      $target_carb = $user->get('field_percentuale_carboidrati')->value ?? 0; 
+      $target_grassi = $user->get('field_percentuale_grassi')->value ?? 0; 
+      $target_proteine = $user->get('field_percentuale_proteine')->value ?? 0; 
       
       $componenti_html = '';
       $componenti_field = $pasto->get('field_componente_pasto')->getValue();
@@ -116,14 +125,14 @@ function render_pasti_in_radio(array &$widget)
         $componenti_html .= '</ul></div>';
       }
       
-      $details = '<div id="pasto-details-' . $nid . '" class="pasto-item-custom pasto-details" data-pasto-nid="' . $nid . '">'
+      $field_attr = $field_name ? ' data-pasto-field="' . htmlspecialchars($field_name, ENT_QUOTES, 'UTF-8') . '"' : '';
+      $details = '<div id="pasto-details-' . $nid . '" class="pasto-item-custom pasto-details" data-pasto-nid="' . $nid . '"' . $field_attr . '>'
         . '<h3 class="pasto-title">' . $safe_title . '</h3>'
-        . '<div class="pasto-meta">ID: #' . $nid . '</div>'
         . '<div class="pasto-valori-nutrizionali">'
         . '<p><strong>Calorie:</strong> ' . $kcal . ' kcal</p>'
-        . '<p><strong>Carboidrati:</strong> ' . $carboidrati . 'g (' . $perc_carb . '%)</p>'
-        . '<p><strong>Grassi:</strong> ' . $grassi . 'g (' . $perc_grassi . '%)</p>'
-        . '<p><strong>Proteine:</strong> ' . $proteine . 'g (' . $perc_prot . '%)</p>'
+        . '<p><strong>Carboidrati:</strong> ' . $carboidrati . 'g (' . $perc_carb . '% / ' . $target_carb . '%)</p>'
+        . '<p><strong>Grassi:</strong> ' . $grassi . 'g (' . $perc_grassi . '% / ' . $target_grassi . '%)</p>'
+        . '<p><strong>Proteine:</strong> ' . $proteine . 'g (' . $perc_prot . '% / ' . $target_proteine . '%)</p>'
         . '</div>'
         . $componenti_html
         . '</div>';

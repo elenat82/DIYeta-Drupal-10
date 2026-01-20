@@ -2,7 +2,20 @@
 .pasto-details {
   margin-top: 1rem;
   padding: 1rem;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+/* Stato selezionato */
+.pasto-details.selected {
+  border-color: #28a745;
+  background-color: #f0f8f5;
+}
+
+/* Nascondi il radio button */
+input[type="radio"].form-radio {
+  display: none;
 }
