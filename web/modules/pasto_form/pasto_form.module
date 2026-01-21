@@ -20,6 +20,7 @@ function pasto_form_form_alter(
   if ($form_id == 'node_giornata_form') {
     $form['#attached']['library'][] = 'pasto_form/pasto-details';
     $form['#attached']['library'][] = 'pasto_form/pasto-totals';
+    $form['#attached']['library'][] = 'pasto_form/pasto-accordion';
 
     // Carica i dati dell'utente loggato
     $current_user = \Drupal::currentUser();

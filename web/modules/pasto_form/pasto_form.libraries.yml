@@ -9,3 +9,9 @@ pasto-totals:
     js/pasto-totals.js: {}
   dependencies:
     - pasto_form/pasto-details
+
+pasto-accordion:
+  js:
+    js/pasto-accordion.js: {}
+  dependencies:
+    - pasto_form/pasto-details
