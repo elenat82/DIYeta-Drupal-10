@@ -21,7 +21,25 @@ function pasto_form_form_alter(
     $form['#attached']['library'][] = 'pasto_form/pasto-details';
     $form['#attached']['library'][] = 'pasto_form/pasto-totals';
 
+    // Carica i dati dell'utente loggato
+    $current_user = \Drupal::currentUser();
+    $user = \Drupal\user\Entity\User::load($current_user->id());
+    
+    $user_kcal = $user->get('field_kcal_giornaliere')->value ?? 0;
+    $user_carb = $user->get('field_percentuale_carboidrati')->value ?? 0;
+    $user_fat = $user->get('field_percentuale_grassi')->value ?? 0;
+    $user_prot = $user->get('field_percentuale_proteine')->value ?? 0;
+    
+    // Passa i dati al JavaScript tramite drupalSettings
+    $form['#attached']['drupalSettings']['pasto_form'] = [
+      'user_kcal_target' => (float) $user_kcal,
+      'user_carb_target' => (float) $user_carb,
+      'user_fat_target' => (float) $user_fat,
+      'user_prot_target' => (float) $user_prot,
+    ];
+
     $pasti_fields = [
+
       'field_colazione',
       'field_pranzo',
       'field_spuntino',
@@ -32,7 +50,7 @@ function pasto_form_form_alter(
 
     foreach ($pasti_fields as $fname) {
       if (!empty($form[$fname]) && !empty($form[$fname]['widget']) && is_array($form[$fname]['widget'])) {
-        render_pasti_in_radio($form[$fname]['widget'], $fname);
+        render_pasti_in_radio($form[$fname]['widget'], $fname, $user);
         if (!empty($form[$fname]['widget']['#pasto_details']) && is_array($form[$fname]['widget']['#pasto_details'])) {
           $all = implode('', $form[$fname]['widget']['#pasto_details']);
           $form[$fname]['pasti_details'] = [
@@ -49,7 +67,7 @@ function pasto_form_form_alter(
 /**
  * Sostituisce il label dei radio con il rendering del nodo Pasto.
  */
-function render_pasti_in_radio(array &$widget, $field_name = NULL)
+function render_pasti_in_radio(array &$widget, $field_name = NULL, $user = NULL)
 {
   $entity_type_manager = \Drupal::entityTypeManager();
   $view_builder = $entity_type_manager->getViewBuilder('node');
@@ -80,12 +98,10 @@ function render_pasti_in_radio(array &$widget, $field_name = NULL)
       $perc_prot = $pasto->get('field_percentuale_proteine')->value ?? 0;
       
       // Estrai gli obiettivi dell'utente loggato
-      $current_user = \Drupal::currentUser();
-      $user = \Drupal\user\Entity\User::load($current_user->id());
-      $target_kcal_giornaliere = $user->get('field_kcal_giornaliere')->value ?? 0;
-      $target_carb = $user->get('field_percentuale_carboidrati')->value ?? 0; 
-      $target_grassi = $user->get('field_percentuale_grassi')->value ?? 0; 
-      $target_proteine = $user->get('field_percentuale_proteine')->value ?? 0; 
+      $target_kcal_giornaliere = $user ? $user->get('field_kcal_giornaliere')->value ?? 0 : 0;
+      $target_carb = $user ? $user->get('field_percentuale_carboidrati')->value ?? 0 : 0;
+      $target_grassi = $user ? $user->get('field_percentuale_grassi')->value ?? 0 : 0;
+      $target_proteine = $user ? $user->get('field_percentuale_proteine')->value ?? 0 : 0; 
       
       $componenti_html = '';
       $componenti_field = $pasto->get('field_componente_pasto')->getValue();

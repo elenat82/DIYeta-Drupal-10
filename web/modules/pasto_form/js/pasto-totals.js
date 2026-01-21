@@ -2,6 +2,13 @@
   'use strict';
 
   document.addEventListener('DOMContentLoaded', function () {
+    // Carica i target dell'utente da drupalSettings
+    const settings = typeof drupalSettings !== 'undefined' ? drupalSettings.pasto_form : {};
+    const userKcalTarget = settings.user_kcal_target || 0;
+    const userCarbTarget = settings.user_carb_target || 0;
+    const userFatTarget = settings.user_fat_target || 0;
+    const userProtTarget = settings.user_prot_target || 0;
+
     // Crea il div del riepilogo nutrizionale
     const summaryDiv = document.createElement('div');
     summaryDiv.id = 'pasto-summary';
@@ -9,10 +16,10 @@
     summaryDiv.innerHTML = `
       <h3>Riepilogo Giornaliero</h3>
       <div class="summary-values">
-        <p><strong>Calorie:</strong> <span id="total-kcal">0</span> kcal</p>
-        <p><strong>Carboidrati:</strong> <span id="total-carb">0</span>g</p>
-        <p><strong>Grassi:</strong> <span id="total-fat">0</span>g</p>
-        <p><strong>Proteine:</strong> <span id="total-prot">0</span>g</p>
+        <p><strong>Calorie:</strong> <span id="total-kcal">0</span> / ${userKcalTarget} kcal</p>
+        <p><strong>Carboidrati:</strong> <span id="total-carb">0</span>% / ${userCarbTarget}%</p>
+        <p><strong>Grassi:</strong> <span id="total-fat">0</span>% / ${userFatTarget}%</p>
+        <p><strong>Proteine:</strong> <span id="total-prot">0</span>% / ${userProtTarget}%</p>
       </div>
     `;
 
@@ -42,14 +49,14 @@
           
           // Regex per estrarre i valori
           const kcalMatch = content.match(/Calorie:<\/strong>\s*(\d+(?:\.\d+)?)\s*kcal/);
-          const carbMatch = content.match(/Carboidrati:<\/strong>\s*(\d+(?:\.\d+)?)/);
-          const fatMatch = content.match(/Grassi:<\/strong>\s*(\d+(?:\.\d+)?)/);
-          const protMatch = content.match(/Proteine:<\/strong>\s*(\d+(?:\.\d+)?)/);
+          const carbMatch = content.match(/Carboidrati:<\/strong>\s*(\d+(?:\.\d+)?)g\s*\((\d+(?:\.\d+)?)/);
+          const fatMatch = content.match(/Grassi:<\/strong>\s*(\d+(?:\.\d+)?)g\s*\((\d+(?:\.\d+)?)/);
+          const protMatch = content.match(/Proteine:<\/strong>\s*(\d+(?:\.\d+)?)g\s*\((\d+(?:\.\d+)?)/);
 
           if (kcalMatch) totalKcal += parseFloat(kcalMatch[1]);
-          if (carbMatch) totalCarb += parseFloat(carbMatch[1]);
-          if (fatMatch) totalFat += parseFloat(fatMatch[1]);
-          if (protMatch) totalProt += parseFloat(protMatch[1]);
+          if (carbMatch) totalCarb += parseFloat(carbMatch[2]); // Prendi la %
+          if (fatMatch) totalFat += parseFloat(fatMatch[2]); // Prendi la %
+          if (protMatch) totalProt += parseFloat(protMatch[2]); // Prendi la %
         }
       });
 
@@ -76,3 +83,4 @@
     updateTotals();
   });
 })();
+
