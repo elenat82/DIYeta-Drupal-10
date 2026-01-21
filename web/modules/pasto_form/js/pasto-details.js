@@ -10,10 +10,14 @@
       const pastoNid = detailsDiv.getAttribute('data-pasto-nid');
       const fieldName = detailsDiv.getAttribute('data-pasto-field');
       
-      // Cerca il radio corrispondente usando sia name (field) che value (nid)
+      // Cerca il radio dentro il wrapper del field per evitare match globali
       let radioButton = null;
       if (fieldName) {
-        radioButton = document.querySelector('input[type="radio"][name="' + fieldName + '"][value="' + pastoNid + '"]');
+        // wrapper potrebbe avere data-drupal-selector="edit-field_<name>" oppure id
+        const wrapper = document.querySelector('[data-drupal-selector="edit-' + fieldName + '"]') || document.getElementById('edit-' + fieldName) || detailsDiv.closest('[data-drupal-selector*="edit-field-"]');
+        if (wrapper) {
+          radioButton = wrapper.querySelector('input[type="radio"][value="' + pastoNid + '"]');
+        }
       }
       // Fallback: cerca solo per value (vecchio comportamento)
       if (!radioButton) {
@@ -44,8 +48,8 @@
           const allRadios = document.querySelectorAll('input[type="radio"][name="' + radioButton.name + '"]');
           allRadios.forEach(function (radio) {
             radio.addEventListener('change', function () {
-              // Rimuovi la classe selected da tutti i dettagli
-              document.querySelectorAll('div.pasto-details.selected').forEach(function (details) {
+              // Rimuovi la classe selected SOLO dai dettagli dello stesso field
+              document.querySelectorAll('div.pasto-details[data-pasto-field="' + radio.name + '"].selected').forEach(function (details) {
                 details.classList.remove('selected');
               });
               
