@@ -4,3 +4,8 @@ pasto-details:
   css:
     theme:
       css/pasto-details.css: {}
+pasto-totals:
+  js:
+    js/pasto-totals.js: {}
+  dependencies:
+    - pasto_form/pasto-details
