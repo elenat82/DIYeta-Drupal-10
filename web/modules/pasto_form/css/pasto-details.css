@@ -9,6 +9,55 @@
   transition: border-color 0.3s ease;
 }
 
+.pasto-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.pasto-kcal {
+  color: #666;
+  margin-left: 1rem;
+}
+
+.pasto-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pasto-valori-nutrizionali {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  min-width: 250px;
+}
+
+.pasto-valori-nutrizionali p {
+  margin: 0.5rem 0;
+}
+
+.pasto-componenti {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  min-width: 250px;
+}
+
+.pasto-componenti h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.pasto-componenti ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.pasto-componenti li {
+  margin: 0.25rem 0;
+}
+
 /* Stato selezionato */
 .pasto-details.selected {
   border-color: #28a745;
