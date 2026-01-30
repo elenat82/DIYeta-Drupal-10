@@ -44,6 +44,10 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
       'label' => 'Proteine',
       'value' => $account->get('field_percentuale_proteine')->value ?? '',
     ],
+    'field_fibre_pasto' => [
+      'label' => 'Fibre',
+      'value' => $account->get('field_grammi_fibre_giornaliere')->value ?? '',
+    ],
   ];
   
   $fields_to_move = [
@@ -51,6 +55,7 @@ function mio_pasto_form_node_pasto_form_alter(&$form, FormStateInterface $form_s
     'field_proteine_pasto',
     'field_carboidrati_pasto',
     'field_grassi_pasto',
+    'field_fibre_pasto',
     'field_percentuale_carboidrati',
     'field_percentuale_grassi',
     'field_percentuale_proteine'
@@ -163,6 +168,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
   $protein_tot = 0;
   $carbs_tot = 0;
   $fat_tot = 0;
+  $fiber_tot = 0;
   $perc_protein = $perc_carbs = $perc_fat = 0;
 
   // Recupera i paragrafi dal field_componente_pasto
@@ -193,6 +199,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
               $protein = $paragraph->get('field_proteine')->value ?? 0;
               $carbs = $paragraph->get('field_carboidrati')->value ?? 0;
               $fat = $paragraph->get('field_grassi')->value ?? 0;
+              $fiber = $paragraph->get('field_fibre')->value ?? 0;
             }
           }
 
@@ -202,6 +209,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
           $protein_tot += ($protein * $quantita / 100);
           $carbs_tot += ($carbs * $quantita / 100);
           $fat_tot += ($fat * $quantita / 100);
+          $fiber_tot += ($fiber * $quantita / 100);
 
           if ($kcal_tot > 0) {
             $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
@@ -226,6 +234,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
               $protein = $paragraph->get('field_proteine')->value ?? 0;
               $carbs = $paragraph->get('field_carboidrati')->value ?? 0;
               $fat = $paragraph->get('field_grassi')->value ?? 0;
+              $fiber = $paragraph->get('field_fibre')->value ?? 0;
             }
 
             $n_porzioni = $subform['field_numero_porzioni'][0]['value'] ?? 0;
@@ -234,6 +243,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
             $protein_tot += ($protein * $n_porzioni);
             $carbs_tot += ($carbs * $n_porzioni);
             $fat_tot += ($fat * $n_porzioni);
+            $fiber_tot += ($fiber * $n_porzioni);
 
             if ($kcal_tot > 0) {
               $perc_protein = round(($protein_tot * 4 / $kcal_tot) * 100, 1);
@@ -251,6 +261,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
   $form_state->setValue('field_proteine_pasto', [['value' => round($protein_tot, 2)]]);
   $form_state->setValue('field_carboidrati_pasto', [['value' => round($carbs_tot, 2)]]);
   $form_state->setValue('field_grassi_pasto', [['value' => round($fat_tot, 2)]]);
+  $form_state->setValue('field_fibre_pasto', [['value' => round($fiber_tot, 2)]]);
   $form_state->setValue('field_percentuale_proteine', [['value' => $perc_protein]]);
   $form_state->setValue('field_percentuale_carboidrati', [['value' => $perc_carbs]]);
   $form_state->setValue('field_percentuale_grassi', [['value' => $perc_fat]]);
@@ -261,6 +272,7 @@ function mio_pasto_update_counter(array $form, FormStateInterface $form_state) {
     'field_proteine_pasto' => $protein_tot,
     'field_carboidrati_pasto' => $carbs_tot,
     'field_grassi_pasto' => $fat_tot,
+    'field_fibre_pasto' => $fiber_tot,
     'field_percentuale_proteine' => $perc_protein,
     'field_percentuale_carboidrati' => $perc_carbs,
     'field_percentuale_grassi' => $perc_fat,
@@ -302,6 +314,7 @@ function mio_pasto_node_presave(NodeInterface $node)
   $protein_tot = 0.0;
   $carbs_tot = 0.0;
   $fat_tot = 0.0;
+  $fiber_tot = 0.0;
 
   $field_name = 'field_componente_pasto';
 
@@ -343,12 +356,14 @@ function mio_pasto_node_presave(NodeInterface $node)
             $prot_100 = (float) ($val_par->get('field_proteine')->value ?? 0);
             $carb_100 = (float) ($val_par->get('field_carboidrati')->value ?? 0);
             $fat_100 = (float) ($val_par->get('field_grassi')->value ?? 0);
+            $fiber_100 = (float) ($val_par->get('field_fibre')->value ?? 0);
 
             $factor = $qty / 100.0;
             $kcal_tot += $kcal_100 * $factor;
             $protein_tot += $prot_100 * $factor;
             $carbs_tot += $carb_100 * $factor;
             $fat_tot += $fat_100 * $factor;
+            $fiber_tot += $fiber_100 * $factor;
           }
         }
       } elseif ($bundle === 'ingrediente_per_porzione') {
@@ -367,11 +382,13 @@ function mio_pasto_node_presave(NodeInterface $node)
             $prot_p = (float) ($val_par->get('field_proteine')->value ?? 0);
             $carb_p = (float) ($val_par->get('field_carboidrati')->value ?? 0);
             $fat_p = (float) ($val_par->get('field_grassi')->value ?? 0);
+            $fiber_p = (float) ($val_par->get('field_fibre')->value ?? 0);
 
             $kcal_tot += $kcal_p * $n_porz;
             $protein_tot += $prot_p * $n_porz;
             $carbs_tot += $carb_p * $n_porz;
             $fat_tot += $fat_p * $n_porz;
+            $fiber_tot += $fiber_p * $n_porz;
           }
         }
       }
@@ -397,6 +414,9 @@ function mio_pasto_node_presave(NodeInterface $node)
   if ($node->hasField('field_grassi_pasto')) {
     $node->set('field_grassi_pasto', round($fat_tot, 2));
   }
+  if ($node->hasField('field_fibre_pasto')) {
+    $node->set('field_fibre_pasto', round($fiber_tot, 2));
+  }
   if ($node->hasField('field_percentuale_proteine')) {
     $node->set('field_percentuale_proteine', $perc_prot);
   }
@@ -407,11 +427,12 @@ function mio_pasto_node_presave(NodeInterface $node)
     $node->set('field_percentuale_grassi', $perc_fat);
   }
 
-  \Drupal::logger('mio_pasto')->notice('node_presave: Totali Kcal=@k P=@p C=@c F=@f (prot%=@pp carb%=@cp fat%=@fp)', [
+  \Drupal::logger('mio_pasto')->notice('node_presave: Totali Kcal=@k P=@p C=@c F=@f Fibre=@fb (prot%=@pp carb%=@cp fat%=@fp)', [
     '@k' => round($kcal_tot),
     '@p' => round($protein_tot, 2),
     '@c' => round($carbs_tot, 2),
     '@f' => round($fat_tot, 2),
+    '@fb' => round($fiber_tot, 2),
     '@pp' => $perc_prot,
     '@cp' => $perc_carbs,
     '@fp' => $perc_fat,
