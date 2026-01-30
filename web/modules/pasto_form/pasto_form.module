@@ -30,6 +30,7 @@ function pasto_form_form_alter(
     $user_carb = $user->get('field_percentuale_carboidrati')->value ?? 0;
     $user_fat = $user->get('field_percentuale_grassi')->value ?? 0;
     $user_prot = $user->get('field_percentuale_proteine')->value ?? 0;
+    $user_fiber = $user->get('field_grammi_fibre_giornaliere')->value ?? 0;
     
     // Passa i dati al JavaScript tramite drupalSettings
     $form['#attached']['drupalSettings']['pasto_form'] = [
@@ -37,6 +38,7 @@ function pasto_form_form_alter(
       'user_carb_target' => (float) $user_carb,
       'user_fat_target' => (float) $user_fat,
       'user_prot_target' => (float) $user_prot,
+      'user_fiber_target' => (float) $user_fiber,
     ];
 
     $pasti_fields = [

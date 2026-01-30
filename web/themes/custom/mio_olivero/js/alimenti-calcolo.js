@@ -13,6 +13,7 @@
           proteine: parseFloat(container.dataset.proteine),
           grassi: parseFloat(container.dataset.grassi),
           carboidrati: parseFloat(container.dataset.carboidrati),
+          fibre: parseFloat(container.dataset.fibre),
         };
 
         const output = {
@@ -20,6 +21,7 @@
           proteine: container.querySelector('.js-proteine'),
           grassi: container.querySelector('.js-grassi'),
           carboidrati: container.querySelector('.js-carboidrati'),
+          fibre: container.querySelector('.js-fibre'),
         };
 
         function aggiorna() {
@@ -29,6 +31,7 @@
           output.proteine.textContent = (base.proteine / 100 * grammi).toFixed(1);
           output.grassi.textContent = (base.grassi / 100 * grammi).toFixed(1);
           output.carboidrati.textContent = (base.carboidrati / 100 * grammi).toFixed(1);
+          output.fibre.textContent = (base.fibre / 100 * grammi).toFixed(1);
         }
 
         input.addEventListener('input', aggiorna);

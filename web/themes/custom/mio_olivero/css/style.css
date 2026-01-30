@@ -162,7 +162,7 @@
   margin: 0;
   width: 90%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .view-alimenti .nutriente {
@@ -339,6 +339,10 @@
 
 .icon-carbs {
   color: #EDAA58; /* Pane */
+}
+
+.icon-fiber {
+  color: #6B8E23; /* Verde oliva */
 }
 
 .icon-marca {

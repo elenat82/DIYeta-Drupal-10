@@ -5,6 +5,7 @@
 {% set prot = paragraph.field_proteine.value %}
 {% set grassi = paragraph.field_grassi.value %}
 {% set carbo = paragraph.field_carboidrati.value %}
+{% set fibre = paragraph.field_fibre.value %}
 {% set porzione_descr = paragraph.field_porzione_descrizione.value %}
 
 <div class="valore-nutrizionale"
@@ -13,6 +14,7 @@
        data-proteine="{{ prot }}"
        data-grassi="{{ grassi }}"
        data-carboidrati="{{ carbo }}"
+        data-fibre="{{ fibre }}"
      {% endif %}
 >
 
@@ -53,6 +55,11 @@
     <li class="nutriente" data-label="Carboidrati">
       <i class="fa-solid fa-bread-slice icon-carbs"></i>
       <span class="js-carboidrati">{{ carbo }}</span> g
+    </li>
+
+    <li class="nutriente" data-label="Fibre">
+      <i class="fa-solid fa-carrot icon-fiber"></i>
+      <span class="js-fibre">{{ fibre }}</span> g
     </li>
   </ul>
 </div>
