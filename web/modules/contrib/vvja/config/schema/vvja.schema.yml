@@ -1,0 +1,61 @@
+views.style.views_vvja:
+  type: views_style
+  label: 'Views Vanilla JavaScript Accordion'
+  mapping:
+    unique_id:
+      type: integer
+      label: 'Unique identifier'
+    single_toggle:
+      type: boolean
+      label: 'Show single toggle indicators'
+    global_toggle:
+      type: boolean
+      label: 'Show global toggle button'
+    expand_default:
+      type: string
+      label: 'Default expand behavior'
+    transition_speed:
+      type: float
+      label: 'Transition speed in seconds'
+    animation:
+      type: string
+      label: 'Animation type'
+    enable_css:
+      type: boolean
+      label: 'Enable CSS library'
+    exclusive_panel:
+      type: boolean
+      label: 'Exclusive panel mode'
+    accordion_item_width:
+      type: integer
+      label: 'Custom item width'
+    pane_padding:
+      type: integer
+      label: 'Content padding in pixels'
+    panel_gap:
+      type: integer
+      label: 'Panel gap in pixels'
+    enable_deeplink:
+      type: boolean
+      label: 'Enable deep linking'
+    deeplink_identifier:
+      type: string
+      label: 'Deep link URL identifier'
+      constraints:
+        Regex:
+          pattern: '/^[a-z][a-z0-9-]*[a-z0-9]$/'
+          message: 'Must start with letter, contain only lowercase letters, numbers, and hyphens'
+        Length:
+          max: 20
+    svg_expand_content:
+      type: string
+      label: 'Custom expand content SVG icon'
+    svg_collapse_content:
+      type: string
+      label: 'Custom collapse content SVG icon'
+    svg_expand_all:
+      type: string
+      label: 'Custom expand all SVG icon'
+    svg_collapse_all:
+      type: string
+      label: 'Custom collapse all SVG icon'

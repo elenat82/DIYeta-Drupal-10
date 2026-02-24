@@ -49,6 +49,7 @@
         "drupal/token": "^1.15",
         "drupal/twig_field": "^2.0",
         "drupal/views_entity_form_field": "^1.0@beta",
+        "drupal/vvja": "^1.0",
         "drush/drush": "^13.6",
         "kint-php/kint": "^6.0"
     },

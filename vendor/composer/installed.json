@@ -3380,6 +3380,55 @@
             "install-path": "../../web/modules/contrib/views_entity_form_field"
         },
         {
+            "name": "drupal/vvja",
+            "version": "1.0.15",
+            "version_normalized": "1.0.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/vvja.git",
+                "reference": "1.0.15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/vvja-1.0.15.zip",
+                "reference": "1.0.15",
+                "shasum": "b79fdb8d9cfb5e97093055c14df5d87f259c6eac"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.15",
+                    "datestamp": "1771146895",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "installation-source": "dist",
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alaa Haddad (alaahaddad.com)",
+                    "homepage": "https://www.drupal.org/u/flashwebcenter",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Provides a Vanilla Javascript Accordion format for Views.",
+            "homepage": "https://drupal.org/project/vvja",
+            "support": {
+                "source": "https://git.drupalcode.org/project/vvja",
+                "issues": "https://drupal.org/project/issues/vvja"
+            },
+            "install-path": "../../web/modules/contrib/vvja"
+        },
+        {
             "name": "drush/drush",
             "version": "13.6.2",
             "version_normalized": "13.6.2.0",

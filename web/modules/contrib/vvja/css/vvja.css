@@ -1,0 +1,306 @@
+/**
+ * @file
+ * Views Vanilla JavaScript Accordion.
+ *
+ * Filename:     vvja.css
+ * Website:      https://www.flashwebcenter.com
+ * Developer:    Alaa Haddad https://www.alaahaddad.com.
+ */
+.vvja {
+  --vvja-grid-gap: 16px;
+  --vvja-pane-padding: 16px;
+  --vvja-transition-speed: 0.5;
+}
+
+.vvj-accordion .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+.vvja-hidden {
+  display: none !important;
+}
+
+.vvj-accordion,
+.vvj-accordion * {
+  box-sizing: border-box;
+}
+
+.vvj-accordion,
+.vvj-accordion .view-content {
+  width: 100%;
+  min-width: 100%;
+  display: block !important;
+}
+
+.vvja {
+  overflow: hidden;
+}
+
+.vvja .vvja-pane {
+  transition: max-height var(--vvja-transition-speed);
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+.vvja .vvja-pane-inner {
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--vvja-pane-padding, 16px);
+}
+
+.vvja {
+  margin-block-end: var(--vvja-grid-gap, 16px);
+}
+
+/* Basic layout for accordion items and their panes */
+.vvja .vvja-inner {
+  gap: var(--vvja-grid-gap);
+  display: grid;
+  width: 100%;
+}
+
+.vvja .vvja-item {
+  display: grid;
+  width: 100%;
+}
+
+/* Style for accordion buttons */
+.vvja .vvja-button {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  white-space: initial;
+  cursor: pointer;
+  z-index: 1;
+  text-align: start;
+  margin: 0;
+  font-weight: normal;
+  height: auto;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.vvja .global-toggle .button span,
+.vvja .vvja-button .single-toggle {
+  line-height: 1;
+}
+
+.vvja .global-toggle .button span svg,
+.vvja .vvja-button .single-toggle svg {
+  fill: currentColor;
+}
+
+.vvja .vvja-button > * {
+  display: inline-flex;
+}
+
+.vvja .vvja-button span.btn-inner {
+  align-items: center;
+}
+
+/* Accordion pane styles to manage open/close */
+.vvja .opened .vvja-pane {
+  max-height: none;
+}
+
+.vvja .closed .vvja-pane {
+  max-height: 0;
+}
+
+/* Style for toggle indicators */
+.vvja .single-toggle svg,
+.vvja .group-toggle svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.vvja .single-toggle,
+.vvja .global-toggle .group-toggle {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.vvja .single-toggle > .single-toggle-inner,
+.vvja .global-toggle .group-toggle > .group-toggle-inner {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.vvja .single-toggle > .single-toggle-inner.vvja-icon-hidden,
+.vvja .global-toggle .group-toggle > .group-toggle-inner.vvja-icon-hidden {
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
+  pointer-events: none;
+}
+
+.vvja .vvja-button > .single-toggle {
+  margin-inline-start: auto;
+  padding-inline-start: 12px;
+  align-self: start;
+}
+
+.vvja .global-toggle {
+  justify-content: end;
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+}
+
+.vvja-button:hover {
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.04);
+  margin-block-start: 1px;
+  transform: translateY(-1px);
+}
+
+.vvja-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.vvja-button .btn-inner {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* For expanded cards */
+.vvja.max-w .vvja-inner {
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--vvja-box-width) * 1px), 1fr));
+}
+
+.vvja.global-toggle-on.max-w .vvja-inner >:first-child {
+  grid-column: 1 / -1;
+}
+
+.vvja.max-w .vvja-item {
+  display: block;
+}
+
+@media (max-width:35.99875rem) {
+  .vvja.max-w .vvja-inner {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* Animate Accordion */
+.a-fade {
+  animation: opac 0.8s ease-out;
+}
+
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+.a-top {
+  position: relative;
+  animation: animatetop 0.6s ease-out;
+}
+
+@keyframes animatetop {
+  from {
+    top: -100px;
+    opacity: 0;
+  }
+
+  to {
+    top: 0;
+    opacity: 1;
+  }
+
+}
+
+.a-left {
+  position: relative;
+  animation: animateleft 0.6s ease-out;
+}
+
+@keyframes animateleft {
+  from {
+    left: -100px;
+    opacity: 0;
+  }
+
+  to {
+    left: 0;
+    opacity: 1;
+  }
+
+}
+
+.a-right {
+  position: relative;
+  animation: animateright 0.6s ease-out;
+}
+
+@keyframes animateright {
+  from {
+    right: -100px;
+    opacity: 0;
+  }
+
+  to {
+    right: 0;
+    opacity: 1;
+  }
+
+}
+
+.a-bottom {
+  position: relative;
+  animation: animatebottom 0.6s ease-out;
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+
+}
+
+.a-zoom {
+  animation: animatezoom 0.6s ease-out;
+}
+
+@keyframes animatezoom {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+
+}
