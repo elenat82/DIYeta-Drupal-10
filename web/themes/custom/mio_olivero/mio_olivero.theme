@@ -49,7 +49,7 @@ function mio_olivero_preprocess_field(&$variables) {
 function mio_olivero_preprocess_views_view_fields(array &$variables)
 {
 
-  if ($variables['view']->id() === 'colazioni' || $variables['view']->id() === 'spuntini' ||$variables['view']->id() === 'pranzi' || $variables['view']->id() === 'cene' || $variables['view']->id() === 'extra') {
+  if ($variables['view']->id() === 'colazioni' || $variables['view']->id() === 'spuntini' ||$variables['view']->id() === 'pranzi' || $variables['view']->id() === 'cene' || $variables['view']->id() === 'extra' || $variables['view']->id() === 'giornate') {
     $user = \Drupal::currentUser();
     $account = User::load($user->id());
 
@@ -87,4 +87,133 @@ function mio_olivero_preprocess_views_view_fields(array &$variables)
   }
 }
 
+/**
+ * Implements hook_preprocess_views_view_vvja_fields().
+ *
+ * Prepara dati pasti per VVJA giornate: alimenti e progress bar macros.
+ */
+function mio_olivero_preprocess_views_view_vvja_fields(array &$variables) {
+  if ($variables['view']->id() !== 'giornate') {
+    return;
+  }
 
+  // Carica il CSS per la vista giornate
+  $variables['#attached']['library'][] = 'mio_olivero/giornata-vvja';
+
+  $giornata = $variables['row']?->_entity;
+  if (!$giornata instanceof NodeInterface || $giornata->bundle() !== 'giornata') {
+    return;
+  }
+
+  $user = \Drupal::currentUser();
+  $account = User::load($user->id());
+
+  $target_macros = [
+    'carbo' => (float) $account->get('field_percentuale_carboidrati')->value,
+    'proteine' => (float) $account->get('field_percentuale_proteine')->value,
+    'grassi' => (float) $account->get('field_percentuale_grassi')->value,
+  ];
+
+  $pasti_fields = [
+    'field_colazione' => 'Colazione',
+    'field_spuntino' => 'Spuntino',
+    'field_pranzo' => 'Pranzo',
+    'field_merenda' => 'Merenda',
+    'field_cena' => 'Cena',
+    'field_extra' => 'Extra',
+  ];
+
+  $variables['pasti_dati'] = [];
+
+  foreach ($pasti_fields as $field_name => $label) {
+    $pasto_ref = $giornata->get($field_name)->first();
+    if (!$pasto_ref) {
+      continue;
+    }
+
+    $pasto_id = $pasto_ref->target_id ?? NULL;
+    if (!$pasto_id) {
+      continue;
+    }
+
+    $pasto = \Drupal::entityTypeManager()->getStorage('node')->load((int) $pasto_id);
+    if (!$pasto instanceof NodeInterface) {
+      continue;
+    }
+
+    // Macros del pasto
+    $pasto_macros = [
+      'kcal' => (float) ($pasto->get('field_kcal_pasto')->value ?? 0),
+      'carbo_g' => (float) ($pasto->get('field_carboidrati_pasto')->value ?? 0),
+      'grassi_g' => (float) ($pasto->get('field_grassi_pasto')->value ?? 0),
+      'proteine_g' => (float) ($pasto->get('field_proteine_pasto')->value ?? 0),
+      'carbo_perc' => (float) ($pasto->get('field_percentuale_carboidrati')->value ?? 0),
+      'grassi_perc' => (float) ($pasto->get('field_percentuale_grassi')->value ?? 0),
+      'proteine_perc' => (float) ($pasto->get('field_percentuale_proteine')->value ?? 0),
+    ];
+
+    // Estrai alimenti (componenti)
+    $alimenti = [];
+    $componenti_field = $pasto->get('field_componente_pasto')->getValue();
+    if (!empty($componenti_field)) {
+      foreach ($componenti_field as $componente_ref) {
+        if (!empty($componente_ref['target_id'])) {
+          $componente = \Drupal::entityTypeManager()->getStorage('paragraph')->load($componente_ref['target_id']);
+          if ($componente) {
+            $tipo_ingrediente = $componente->get('type')->target_id ?? null;
+
+            $alimento_nome = '';
+            $quantita = '';
+
+            if ($tipo_ingrediente === 'ingrediente_per_100_grammi') {
+              $alimento_ref = $componente->get('field_alimento')->first();
+              $quantita_grammi = $componente->get('field_quantita_in_grammi')->value ?? 0;
+
+              if ($alimento_ref && ($alimento = $alimento_ref->entity)) {
+                $alimento_nome = $alimento->label();
+                $quantita = $quantita_grammi . 'g';
+              }
+            } elseif ($tipo_ingrediente === 'ingrediente_per_porzione') {
+              $alimento_ref = $componente->get('field_alimento_per_porzione')->first();
+              $numero_porzioni = $componente->get('field_numero_porzioni')->value ?? 0;
+
+              if ($alimento_ref && ($alimento = $alimento_ref->entity)) {
+                $alimento_nome = $alimento->label();
+                $quantita = $numero_porzioni . ' porzioni';
+              }
+            }
+
+            if ($alimento_nome) {
+              $alimenti[] = [
+                'nome' => $alimento_nome,
+                'quantita' => $quantita,
+              ];
+            }
+          }
+        }
+      }
+    }
+
+    // Progress bar per macros vs target
+    foreach (['carbo', 'grassi', 'proteine'] as $key) {
+      $t = $target_macros[$key];
+      $p = $pasto_macros[$key . '_perc'];
+
+      $within = min($p, $t);
+      $over = max(0, $p - $t);
+
+      $pasto_macros[$key . '_progress'] = [
+        'value' => $p,
+        'target' => $t,
+        'within' => ($t > 0 ? ($within / $t * 100) : 0),
+        'over' => ($t > 0 ? ($over / $t * 100) : 0),
+      ];
+    }
+
+    $variables['pasti_dati'][$field_name] = [
+      'label' => $label,
+      'macros' => $pasto_macros,
+      'alimenti' => $alimenti,
+    ];
+  }
+}

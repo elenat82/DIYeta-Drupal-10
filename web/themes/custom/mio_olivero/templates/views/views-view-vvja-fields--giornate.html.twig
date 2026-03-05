@@ -1,0 +1,113 @@
+{#
+/**
+ * @file
+ * VVJA template for Giornata with daily totals and meal details.
+ *
+ * Header shows: Title + Daily totals (kcal, carbo, grassi, proteine)
+ * Pane shows: All meals with foods and macro progress bars
+ */
+#}
+
+<pre>{{ dump(fields|keys) }}</pre>
+
+{# Header: Title + Daily totals #}
+<div class="giornata-header">
+  <div class="giornata-title">
+    {{ fields.title.content }}
+  </div>
+  <div class="giornata-totals">
+    <span class="totale">
+      <i class="fa-solid fa-fire"></i> {{ fields.field_kcal_giornata_totale.content }} kcal
+    </span>
+    <span class="totale">
+      <i class="fa-solid fa-bread-slice"></i> {{ fields.field_perc_carb_totali.content }}%
+    </span>
+    <span class="totale">
+      <i class="fa-solid fa-bacon"></i> {{ fields.field_perc_grassi_totali.content }}%
+    </span>
+    <span class="totale">
+      <i class="fa-solid fa-drumstick-bite"></i> {{ fields.field_perc_proteine_totali.content }}%
+    </span>
+  </div>
+</div>
+
+{# SEPARATORE CRITICO PER VVJA #}
+<div class="vvja-separator"></div>
+
+{# Pane: Meal details with foods and macro progress bars #}
+<div class="giornata-pasti">
+  {% for campo, pasto in pasti_dati %}
+    <div class="pasto-section pasto-{{ campo|replace({'field_': ''}) }}">
+      <h3 class="pasto-titolo">
+        <i class="fa-solid fa-fire"></i> {{ pasto.label }}
+        <span class="pasto-kcal">{{ pasto.macros.kcal }} kcal</span>
+      </h3>
+
+      {# Alimenti #}
+      {% if pasto.alimenti %}
+        <div class="pasto-alimenti">
+          <h4>Componenti:</h4>
+          <ul>
+            {% for alimento in pasto.alimenti %}
+              <li>{{ alimento.nome }} <strong>({{ alimento.quantita }})</strong></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {# Macros con progress bar #}
+      <div class="pasto-macros">
+        <div class="macro-row macro-carbo">
+          <div class="macro-header">
+            <i class="fa-solid fa-bread-slice"></i>
+            <span class="macro-label">Carbo</span>
+            <span class="macro-values">{{ pasto.macros.carbo_g|number_format(2, ',', '.') }}g ({{ pasto.macros.carbo_perc }}%)</span>
+          </div>
+          <div class="macro-bars">
+            <div class="macro-bar-container">
+              <div class="macro-bar-ok" style="width: {{ pasto.macros.carbo_progress.within }}%"></div>
+              {% if pasto.macros.carbo_progress.over > 0 %}
+                <div class="macro-bar-over" style="width: {{ pasto.macros.carbo_progress.over }}%"></div>
+              {% endif %}
+            </div>
+            <span class="macro-target">Target: {{ pasto.macros.carbo_progress.target }}%</span>
+          </div>
+        </div>
+
+        <div class="macro-row macro-grassi">
+          <div class="macro-header">
+            <i class="fa-solid fa-bacon"></i>
+            <span class="macro-label">Grassi</span>
+            <span class="macro-values">{{ pasto.macros.grassi_g|number_format(2, ',', '.') }}g ({{ pasto.macros.grassi_perc }}%)</span>
+          </div>
+          <div class="macro-bars">
+            <div class="macro-bar-container">
+              <div class="macro-bar-ok" style="width: {{ pasto.macros.grassi_progress.within }}%"></div>
+              {% if pasto.macros.grassi_progress.over > 0 %}
+                <div class="macro-bar-over" style="width: {{ pasto.macros.grassi_progress.over }}%"></div>
+              {% endif %}
+            </div>
+            <span class="macro-target">Target: {{ pasto.macros.grassi_progress.target }}%</span>
+          </div>
+        </div>
+
+        <div class="macro-row macro-proteine">
+          <div class="macro-header">
+            <i class="fa-solid fa-drumstick-bite"></i>
+            <span class="macro-label">Proteine</span>
+            <span class="macro-values">{{ pasto.macros.proteine_g|number_format(2, ',', '.') }}g ({{ pasto.macros.proteine_perc }}%)</span>
+          </div>
+          <div class="macro-bars">
+            <div class="macro-bar-container">
+              <div class="macro-bar-ok" style="width: {{ pasto.macros.proteine_progress.within }}%"></div>
+              {% if pasto.macros.proteine_progress.over > 0 %}
+                <div class="macro-bar-over" style="width: {{ pasto.macros.proteine_progress.over }}%"></div>
+              {% endif %}
+            </div>
+            <span class="macro-target">Target: {{ pasto.macros.proteine_progress.target }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

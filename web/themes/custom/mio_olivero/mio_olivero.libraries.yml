@@ -7,3 +7,8 @@ global-styling:
     js/alimenti-filter.js: {}
   dependencies:
     - core/drupal
+
+giornata-vvja:
+  css:
+    theme:
+      css/giornata-vvja.css: {}

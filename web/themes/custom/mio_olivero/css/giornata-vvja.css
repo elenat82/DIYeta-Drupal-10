@@ -1,0 +1,166 @@
+/* Giornata VVJA - Macro progress bars */
+
+.pasto-section {
+  margin-bottom: 24px;
+  border-left: 4px solid #0066cc;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.pasto-titolo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.pasto-kcal {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d9534f;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pasto-alimenti {
+  margin-bottom: 16px;
+}
+
+.pasto-alimenti h4 {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pasto-alimenti ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pasto-alimenti li {
+  padding: 6px 8px;
+  background: #fff;
+  border-left: 3px solid #ddd;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Macro rows */
+.pasto-macros {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.macro-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.macro-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.macro-header i {
+  font-size: 16px;
+  width: 20px;
+}
+
+.macro-label {
+  min-width: 80px;
+}
+
+.macro-values {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+  margin-left: auto;
+}
+
+/* Progress bar container */
+.macro-bars {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.macro-bar-container {
+  flex: 1;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 4px;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+}
+
+.macro-bar-ok {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  transition: width 0.3s ease;
+}
+
+.macro-bar-over {
+  height: 100%;
+  background: linear-gradient(90deg, #dc3545, #fd7e14);
+  transition: width 0.3s ease;
+}
+
+.macro-target {
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Colori specifici per i macros */
+.macro-carbo .macro-header i {
+  color: #ffc107;
+}
+
+.macro-grassi .macro-header i {
+  color: #ff6b6b;
+}
+
+.macro-proteine .macro-header i {
+  color: #6c63ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .macro-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .macro-values {
+    margin-left: 0;
+  }
+
+  .macro-bars {
+    flex-direction: column;
+  }
+
+  .macro-bar-container {
+    width: 100%;
+  }
+
+  .macro-target {
+    width: 100%;
+    text-align: left;
+  }
+}
