@@ -9,6 +9,7 @@
     const userCarbTarget = settings.user_carb_target || 0;
     const userFatTarget = settings.user_fat_target || 0;
     const userProtTarget = settings.user_prot_target || 0;
+    const userFiberTarget = settings.user_fiber_target || 0;
 
     // Crea il div del riepilogo nutrizionale
     const summaryDiv = document.createElement('div');
@@ -21,6 +22,7 @@
         <p><strong>Carboidrati:</strong> <span id="total-carb">0</span>% / ${userCarbTarget}%</p>
         <p><strong>Grassi:</strong> <span id="total-fat">0</span>% / ${userFatTarget}%</p>
         <p><strong>Proteine:</strong> <span id="total-prot">0</span>% / ${userProtTarget}%</p>
+        <p><strong>Fibre:</strong> <span id="total-fiber">0</span>g / ${userFiberTarget}g</p>
       </div>
     `;
 
@@ -38,6 +40,7 @@
       let totalCarbGrams = 0;
       let totalFatGrams = 0;
       let totalProtGrams = 0;
+      let totalFiberGrams = 0;
 
       // Trova tutti i radio selezionati
       const selectedRadios = document.querySelectorAll('input[type="radio"]:checked');
@@ -58,6 +61,7 @@
           const carbMatch = content.match(/Carboidrati:.*?(\d+(?:\.\d+)?)g\s*\(\s*(\d+(?:\.\d+)?)/);
           const fatMatch = content.match(/Grassi:.*?(\d+(?:\.\d+)?)g\s*\(\s*(\d+(?:\.\d+)?)/);
           const protMatch = content.match(/Proteine:.*?(\d+(?:\.\d+)?)g\s*\(\s*(\d+(?:\.\d+)?)/);
+          const fiberMatch = content.match(/Fibre:\s*(\d+(?:\.\d+)?)g/);
 
           if (kcalMatch) {
             totalKcal += parseFloat(kcalMatch[1]);
@@ -74,6 +78,10 @@
           if (protMatch) {
             totalProtGrams += parseFloat(protMatch[1]);
             console.log('Prot g: ' + protMatch[1]);
+          }
+          if (fiberMatch) {
+            totalFiberGrams += parseFloat(fiberMatch[1]);
+            console.log('Fiber g: ' + fiberMatch[1]);
           }
         } else {
           console.log('ERRORE: div dettagli NON trovato per nid=' + value);
@@ -92,7 +100,7 @@
       const fatPerc = totalKcal > 0 ? (fatCal / totalKcal) * 100 : 0;
       const protPerc = totalKcal > 0 ? (protCal / totalKcal) * 100 : 0;
 
-      console.log('Totali: Kcal=' + totalKcal + ', Carb g=' + totalCarbGrams + ', Fat g=' + totalFatGrams + ', Prot g=' + totalProtGrams);
+      console.log('Totali: Kcal=' + totalKcal + ', Carb g=' + totalCarbGrams + ', Fat g=' + totalFatGrams + ', Prot g=' + totalProtGrams + ', Fiber g=' + totalFiberGrams);
       console.log('Percentuali: Carb=' + carbPerc.toFixed(2) + '%, Fat=' + fatPerc.toFixed(2) + '%, Prot=' + protPerc.toFixed(2) + '%');
 
       // Aggiorna il display
@@ -100,6 +108,7 @@
       const carbSpan = document.getElementById('total-carb');
       const fatSpan = document.getElementById('total-fat');
       const protSpan = document.getElementById('total-prot');
+      const fiberSpan = document.getElementById('total-fiber');
       
       if (kcalSpan) {
         kcalSpan.textContent = Math.round(totalKcal);
@@ -119,12 +128,20 @@
         protSpan.textContent = protPerc.toFixed(2);
         console.log('Span prot aggiornato');
       }
+      if (fiberSpan) {
+        fiberSpan.textContent = totalFiberGrams.toFixed(2);
+        console.log('Span fiber aggiornato');
+      }
 
       // Popola i campi nascosti del form con i totali
       const kcalInput = document.querySelector('input[name="field_kcal_giornata_totale[0][value]"]');
       const carbInput = document.querySelector('input[name="field_carboidrati_giornata_total[0][value]"]');
       const fatInput = document.querySelector('input[name="field_grassi_giornata_totale[0][value]"]');
       const protInput = document.querySelector('input[name="field_proteine_giornata_totale[0][value]"]');
+      const percCarbInput = document.querySelector('input[name="field_perc_carb_totali[0][value]"]');
+      const percFatInput = document.querySelector('input[name="field_perc_grassi_totali[0][value]"]');
+      const percProtInput = document.querySelector('input[name="field_perc_prot_totali[0][value]"]');
+      const fiberInput = document.querySelector('input[name="field_fibre_totali_giornata[0][value]"]');
       
       console.log('Campi form nascosti:');
       if (kcalInput) {
@@ -134,22 +151,46 @@
         console.log('ERRORE: field_kcal_giornata_totale NON trovato');
       }
       if (carbInput) {
-        carbInput.value = carbPerc.toFixed(2);
-        console.log('field_carboidrati_giornata_total = ' + carbPerc.toFixed(2));
+        carbInput.value = totalCarbGrams.toFixed(2);
+        console.log('field_carboidrati_giornata_total = ' + totalCarbGrams.toFixed(2));
       } else {
         console.log('ERRORE: field_carboidrati_giornata_total NON trovato');
       }
       if (fatInput) {
-        fatInput.value = fatPerc.toFixed(2);
-        console.log('field_grassi_giornata_totale = ' + fatPerc.toFixed(2));
+        fatInput.value = totalFatGrams.toFixed(2);
+        console.log('field_grassi_giornata_totale = ' + totalFatGrams.toFixed(2));
       } else {
         console.log('ERRORE: field_grassi_giornata_totale NON trovato');
       }
       if (protInput) {
-        protInput.value = protPerc.toFixed(2);
-        console.log('field_proteine_giornata_totale = ' + protPerc.toFixed(2));
+        protInput.value = totalProtGrams.toFixed(2);
+        console.log('field_proteine_giornata_totale = ' + totalProtGrams.toFixed(2));
       } else {
         console.log('ERRORE: field_proteine_giornata_totale NON trovato');
+      }
+      if (percCarbInput) {
+        percCarbInput.value = carbPerc.toFixed(2);
+        console.log('field_perc_carb_totali = ' + carbPerc.toFixed(2));
+      } else {
+        console.log('ERRORE: field_perc_carb_totali NON trovato');
+      }
+      if (percFatInput) {
+        percFatInput.value = fatPerc.toFixed(2);
+        console.log('field_perc_grassi_totali = ' + fatPerc.toFixed(2));
+      } else {
+        console.log('ERRORE: field_perc_grassi_totali NON trovato');
+      }
+      if (percProtInput) {
+        percProtInput.value = protPerc.toFixed(2);
+        console.log('field_perc_prot_totali = ' + protPerc.toFixed(2));
+      } else {
+        console.log('ERRORE: field_perc_prot_totali NON trovato');
+      }
+      if (fiberInput) {
+        fiberInput.value = totalFiberGrams.toFixed(2);
+        console.log('field_fibre_totali_giornata = ' + totalFiberGrams.toFixed(2));
+      } else {
+        console.log('ERRORE: field_fibre_totali_giornata NON trovato');
       }
 
       // Salva i totali in data attributes per accesso da PHP
@@ -157,6 +198,7 @@
       summaryDiv.setAttribute('data-total-carb', carbPerc);
       summaryDiv.setAttribute('data-total-fat', fatPerc);
       summaryDiv.setAttribute('data-total-prot', protPerc);
+      summaryDiv.setAttribute('data-total-fiber', totalFiberGrams);
       
       console.log('updateTotals() - completato\n');
     }

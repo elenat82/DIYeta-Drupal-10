@@ -95,6 +95,7 @@ function render_pasti_in_radio(array &$widget, $field_name = NULL, $user = NULL)
       $carboidrati = $pasto->get('field_carboidrati_pasto')->value ?? 0;
       $grassi = $pasto->get('field_grassi_pasto')->value ?? 0;
       $proteine = $pasto->get('field_proteine_pasto')->value ?? 0;
+      $fibre = $pasto->get('field_fibre_pasto')->value ?? 0;
       $perc_carb = $pasto->get('field_percentuale_carboidrati')->value ?? 0;
       $perc_grassi = $pasto->get('field_percentuale_grassi')->value ?? 0;
       $perc_prot = $pasto->get('field_percentuale_proteine')->value ?? 0;
@@ -152,6 +153,7 @@ function render_pasti_in_radio(array &$widget, $field_name = NULL, $user = NULL)
         . '<p>Carboidrati: ' . $carboidrati . 'g (' . $perc_carb . '% / ' . $target_carb . '%)</p>'
         . '<p>Grassi: ' . $grassi . 'g (' . $perc_grassi . '% / ' . $target_grassi . '%)</p>'
         . '<p>Proteine: ' . $proteine . 'g (' . $perc_prot . '% / ' . $target_proteine . '%)</p>'
+        . '<p>Fibre: ' . $fibre . 'g</p>'
         . '</div>'
         . $componenti_html
         . '</div>'
@@ -164,6 +166,8 @@ function render_pasti_in_radio(array &$widget, $field_name = NULL, $user = NULL)
 
 /**
  * Implements hook_node_presave().
+ * 
+ * Calcola i totali giornalieri sommando i pasti referenziati.
  */
 function pasto_form_node_presave(NodeInterface $node)
 {
@@ -172,17 +176,80 @@ function pasto_form_node_presave(NodeInterface $node)
     return;
   }
 
-  // Leggi i valori dai campi nascosti e salvali
-  $kcal_totale = $node->get('field_kcal_giornata_totale')->value ?? 0;
-  $carb_totale = $node->get('field_carboidrati_giornata_total')->value ?? 0;
-  $grassi_totale = $node->get('field_grassi_giornata_totale')->value ?? 0;
-  $proteine_totale = $node->get('field_proteine_giornata_totale')->value ?? 0;
+  // Pasti da sommare
+  $pasti_fields = [
+    'field_colazione',
+    'field_pranzo',
+    'field_spuntino',
+    'field_merenda',
+    'field_extra',
+    'field_cena',
+  ];
 
-  // Log di debug (opzionale)
-  \Drupal::logger('pasto_form')->info('node_presave giornata: Kcal=@k, Carb=@c, Grassi=@g, Proteine=@p', [
-    '@k' => $kcal_totale,
-    '@c' => $carb_totale,
-    '@g' => $grassi_totale,
-    '@p' => $proteine_totale,
+  // Totali calcolati
+  $totals = [
+    'kcal' => 0,
+    'carbo' => 0,
+    'grassi' => 0,
+    'proteine' => 0,
+    'fibre' => 0,
+  ];
+
+  // Somma i valori da ogni pasto referenziato
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  foreach ($pasti_fields as $field_name) {
+    $pasto_ref = $node->get($field_name)->first();
+    $pasto_id = $pasto_ref ? ($pasto_ref->target_id ?? NULL) : NULL;
+    if (!$pasto_id) {
+      continue;
+    }
+
+    $pasto = $node_storage->load((int) $pasto_id);
+
+    if (!$pasto instanceof NodeInterface) {
+      continue;
+    }
+
+    // Somma i valori del pasto
+    $totals['kcal'] += (float) ($pasto->get('field_kcal_pasto')->value ?? 0);
+    $totals['carbo'] += (float) ($pasto->get('field_carboidrati_pasto')->value ?? 0);
+    $totals['grassi'] += (float) ($pasto->get('field_grassi_pasto')->value ?? 0);
+    $totals['proteine'] += (float) ($pasto->get('field_proteine_pasto')->value ?? 0);
+    $totals['fibre'] += (float) ($pasto->get('field_fibre_pasto')->value ?? 0);
+  }
+
+  // Percentuali macro rispetto alle kcal totali giornaliere.
+  $perc = [
+    'carbo' => 0,
+    'grassi' => 0,
+    'proteine' => 0,
+  ];
+
+  if ($totals['kcal'] > 0) {
+    $perc['carbo'] = (($totals['carbo'] * 4) / $totals['kcal']) * 100;
+    $perc['grassi'] = (($totals['grassi'] * 9) / $totals['kcal']) * 100;
+    $perc['proteine'] = (($totals['proteine'] * 4) / $totals['kcal']) * 100;
+  }
+
+  // Salva i totali nei campi
+  $node->set('field_kcal_giornata_totale', $totals['kcal']);
+  $node->set('field_carboidrati_giornata_total', $totals['carbo']);
+  $node->set('field_grassi_giornata_totale', $totals['grassi']);
+  $node->set('field_proteine_giornata_totale', $totals['proteine']);
+  $node->set('field_fibre_totali_giornata', $totals['fibre']);
+  $node->set('field_perc_carb_totali', round($perc['carbo'], 2));
+  $node->set('field_perc_grassi_totali', round($perc['grassi'], 2));
+  $node->set('field_perc_prot_totali', round($perc['proteine'], 2));
+
+  // Log di debug
+  \Drupal::logger('pasto_form')->info('node_presave giornata (calcolati): Kcal=@k, CarbG=@c, GrassiG=@g, ProtG=@p, FibreG=@f, Carb%=@pc, Grassi%=@pg, Prot%=@pp', [
+    '@k' => $totals['kcal'],
+    '@c' => $totals['carbo'],
+    '@g' => $totals['grassi'],
+    '@p' => $totals['proteine'],
+    '@f' => $totals['fibre'],
+    '@pc' => round($perc['carbo'], 2),
+    '@pg' => round($perc['grassi'], 2),
+    '@pp' => round($perc['proteine'], 2),
   ]);
 }
