@@ -8,7 +8,7 @@
  */
 #}
 
-<pre>{{ dump(fields|keys) }}</pre>
+{# <pre>{{ dump(fields|keys) }}</pre> #}
 
 {# Header: Title + Daily totals #}
 <div class="giornata-header">
@@ -26,13 +26,115 @@
       <i class="fa-solid fa-bacon"></i> {{ fields.field_perc_grassi_totali.content }}%
     </span>
     <span class="totale">
-      <i class="fa-solid fa-drumstick-bite"></i> {{ fields.field_perc_proteine_totali.content }}%
+      <i class="fa-solid fa-drumstick-bite"></i> {{ fields.field_perc_prot_totali.content }}%
     </span>
+    <span class="totale">
+    <i class="fa-solid fa-carrot icon-fiber"></i> {{ fields.field_fibre_totali_giornata.content }}g</span>
   </div>
 </div>
 
 {# SEPARATORE CRITICO PER VVJA #}
 <div class="vvja-separator"></div>
+
+{# Progress bar giornaliere - Totali vs Target #}
+<div class="giornata-progress-totali">
+  <h3 class="progress-title">Riepilogo Giornaliero</h3>
+
+  {# Kcal giornaliere #}
+  <div class="progress-row progress-kcal">
+    <div class="progress-header">
+      <i class="fa-solid fa-fire"></i>
+      <span class="progress-label">Calorie</span>
+      <span class="progress-values">{{ giornata_totali.kcal|number_format(0, ',', '.') }} / {{ giornata_totali.kcal_progress.target|number_format(0, ',', '.') }} kcal</span>
+    </div>
+    <div class="progress-bars">
+      <div class="progress-bar-container">
+        {% set kcal_perc = giornata_totali.kcal_progress.percentage %}
+        {% if kcal_perc <= 100 %}
+          <div class="progress-bar-ok" style="width: {{ kcal_perc }}%"></div>
+        {% else %}
+          <div class="progress-bar-ok" style="width: 100%"></div>
+          <div class="progress-bar-over" style="width: {{ (kcal_perc - 100) > 100 ? 100 : (kcal_perc - 100) }}%"></div>
+        {% endif %}
+      </div>
+      <span class="progress-percentage">{{ kcal_perc|number_format(1, ',', '.') }}%</span>
+    </div>
+  </div>
+
+  {# Carboidrati giornalieri #}
+  <div class="progress-row progress-carbo">
+    <div class="progress-header">
+      <i class="fa-solid fa-bread-slice"></i>
+      <span class="progress-label">Carboidrati</span>
+      <span class="progress-values">{{ giornata_totali.carbo_g|number_format(1, ',', '.') }}g ({{ giornata_totali.carbo_perc }}%)</span>
+    </div>
+    <div class="progress-bars">
+      <div class="progress-bar-container">
+        <div class="progress-bar-ok" style="width: {{ giornata_totali.carbo_progress.within }}%"></div>
+        {% if giornata_totali.carbo_progress.over > 0 %}
+          <div class="progress-bar-over" style="width: {{ giornata_totali.carbo_progress.over }}%"></div>
+        {% endif %}
+      </div>
+      <span class="progress-target">Target: {{ giornata_totali.carbo_progress.target }}%</span>
+    </div>
+  </div>
+
+  {# Grassi giornalieri #}
+  <div class="progress-row progress-grassi">
+    <div class="progress-header">
+      <i class="fa-solid fa-bacon"></i>
+      <span class="progress-label">Grassi</span>
+      <span class="progress-values">{{ giornata_totali.grassi_g|number_format(1, ',', '.') }}g ({{ giornata_totali.grassi_perc }}%)</span>
+    </div>
+    <div class="progress-bars">
+      <div class="progress-bar-container">
+        <div class="progress-bar-ok" style="width: {{ giornata_totali.grassi_progress.within }}%"></div>
+        {% if giornata_totali.grassi_progress.over > 0 %}
+          <div class="progress-bar-over" style="width: {{ giornata_totali.grassi_progress.over }}%"></div>
+        {% endif %}
+      </div>
+      <span class="progress-target">Target: {{ giornata_totali.grassi_progress.target }}%</span>
+    </div>
+  </div>
+
+  {# Proteine giornaliere #}
+  <div class="progress-row progress-proteine">
+    <div class="progress-header">
+      <i class="fa-solid fa-drumstick-bite"></i>
+      <span class="progress-label">Proteine</span>
+      <span class="progress-values">{{ giornata_totali.proteine_g|number_format(1, ',', '.') }}g ({{ giornata_totali.proteine_perc }}%)</span>
+    </div>
+    <div class="progress-bars">
+      <div class="progress-bar-container">
+        <div class="progress-bar-ok" style="width: {{ giornata_totali.proteine_progress.within }}%"></div>
+        {% if giornata_totali.proteine_progress.over > 0 %}
+          <div class="progress-bar-over" style="width: {{ giornata_totali.proteine_progress.over }}%"></div>
+        {% endif %}
+      </div>
+      <span class="progress-target">Target: {{ giornata_totali.proteine_progress.target }}%</span>
+    </div>
+  </div>
+
+  {# Fibre giornaliere #}
+  <div class="progress-row progress-fibre">
+    <div class="progress-header">
+      <i class="fa-solid fa-carrot"></i>
+      <span class="progress-label">Fibre</span>
+      <span class="progress-values">{{ giornata_totali.fibre_g|number_format(1, ',', '.') }} / {{ giornata_totali.fibre_progress.target|number_format(0, ',', '.') }}g</span>
+    </div>
+    <div class="progress-bars">
+      <div class="progress-bar-container">
+        {% set fibre_perc = giornata_totali.fibre_progress.percentage %}
+        {% if fibre_perc <= 100 %}
+          <div class="progress-bar-ok" style="width: {{ fibre_perc }}%"></div>
+        {% else %}
+          <div class="progress-bar-ok" style="width: 100%"></div>
+        {% endif %}
+      </div>
+      <span class="progress-percentage">{{ fibre_perc|number_format(1, ',', '.') }}%</span>
+    </div>
+  </div>
+</div>
 
 {# Pane: Meal details with foods and macro progress bars #}
 <div class="giornata-pasti">

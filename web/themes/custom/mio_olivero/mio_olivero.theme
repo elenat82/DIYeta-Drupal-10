@@ -97,6 +97,10 @@ function mio_olivero_preprocess_views_view_vvja_fields(array &$variables) {
     return;
   }
 
+  // I target dipendono dall'utente loggato: varia la cache per utente.
+  $variables['#cache']['contexts'][] = 'user';
+  $variables['view']->element['#cache']['contexts'][] = 'user';
+
   // Carica il CSS per la vista giornate
   $variables['#attached']['library'][] = 'mio_olivero/giornata-vvja';
 
@@ -105,14 +109,64 @@ function mio_olivero_preprocess_views_view_vvja_fields(array &$variables) {
     return;
   }
 
-  $user = \Drupal::currentUser();
-  $account = User::load($user->id());
+  $current_user = \Drupal::currentUser();
+  $account = User::load($current_user->id());
+  if (!$account instanceof User) {
+    return;
+  }
 
+  // Target dell'utente corrente.
   $target_macros = [
-    'carbo' => (float) $account->get('field_percentuale_carboidrati')->value,
-    'proteine' => (float) $account->get('field_percentuale_proteine')->value,
-    'grassi' => (float) $account->get('field_percentuale_grassi')->value,
+    'carbo' => (float) ($account->get('field_percentuale_carboidrati')->value ?? 0),
+    'proteine' => (float) ($account->get('field_percentuale_proteine')->value ?? 0),
+    'grassi' => (float) ($account->get('field_percentuale_grassi')->value ?? 0),
   ];
+  $target_kcal = (float) ($account->get('field_kcal_giornaliere')->value ?? 0);
+  $target_fibre = (float) ($account->get('field_grammi_fibre_giornaliere')->value ?? 0);
+
+  // Totali giornalieri con progress bar
+  $giornata_totali = [
+    'kcal' => (float) ($giornata->get('field_kcal_giornata_totale')->value ?? 0),
+    'carbo_g' => (float) ($giornata->get('field_carboidrati_giornata_total')->value ?? 0),
+    'grassi_g' => (float) ($giornata->get('field_grassi_giornata_totale')->value ?? 0),
+    'proteine_g' => (float) ($giornata->get('field_proteine_giornata_totale')->value ?? 0),
+    'fibre_g' => (float) ($giornata->get('field_fibre_totali_giornata')->value ?? 0),
+    'carbo_perc' => (float) ($giornata->get('field_perc_carb_totali')->value ?? 0),
+    'grassi_perc' => (float) ($giornata->get('field_perc_grassi_totali')->value ?? 0),
+    'proteine_perc' => (float) ($giornata->get('field_perc_prot_totali')->value ?? 0),
+  ];
+
+  // Progress bar kcal
+  $giornata_totali['kcal_progress'] = [
+    'value' => $giornata_totali['kcal'],
+    'target' => $target_kcal,
+    'percentage' => ($target_kcal > 0 ? ($giornata_totali['kcal'] / $target_kcal * 100) : 0),
+  ];
+
+  // Progress bar macros (percentuali)
+  foreach (['carbo', 'grassi', 'proteine'] as $key) {
+    $t = $target_macros[$key];
+    $p = $giornata_totali[$key . '_perc'];
+
+    $within = min($p, $t);
+    $over = max(0, $p - $t);
+
+    $giornata_totali[$key . '_progress'] = [
+      'value' => $p,
+      'target' => $t,
+      'within' => ($t > 0 ? ($within / $t * 100) : 0),
+      'over' => ($t > 0 ? ($over / $t * 100) : 0),
+    ];
+  }
+
+  // Progress bar fibre
+  $giornata_totali['fibre_progress'] = [
+    'value' => $giornata_totali['fibre_g'],
+    'target' => $target_fibre,
+    'percentage' => ($target_fibre > 0 ? ($giornata_totali['fibre_g'] / $target_fibre * 100) : 0),
+  ];
+
+  $variables['giornata_totali'] = $giornata_totali;
 
   $pasti_fields = [
     'field_colazione' => 'Colazione',
@@ -147,6 +201,7 @@ function mio_olivero_preprocess_views_view_vvja_fields(array &$variables) {
       'carbo_g' => (float) ($pasto->get('field_carboidrati_pasto')->value ?? 0),
       'grassi_g' => (float) ($pasto->get('field_grassi_pasto')->value ?? 0),
       'proteine_g' => (float) ($pasto->get('field_proteine_pasto')->value ?? 0),
+      'fibre_g' => (float) ($pasto->get('field_fibre_pasto')->value ?? 0),
       'carbo_perc' => (float) ($pasto->get('field_percentuale_carboidrati')->value ?? 0),
       'grassi_perc' => (float) ($pasto->get('field_percentuale_grassi')->value ?? 0),
       'proteine_perc' => (float) ($pasto->get('field_percentuale_proteine')->value ?? 0),
@@ -209,6 +264,13 @@ function mio_olivero_preprocess_views_view_vvja_fields(array &$variables) {
         'over' => ($t > 0 ? ($over / $t * 100) : 0),
       ];
     }
+
+    // Progress bar fibre: confronto grammi pasto vs target giornaliero in grammi.
+    $pasto_macros['fibre_progress'] = [
+      'value' => $pasto_macros['fibre_g'],
+      'target' => $target_fibre,
+      'percentage' => ($target_fibre > 0 ? ($pasto_macros['fibre_g'] / $target_fibre * 100) : 0),
+    ];
 
     $variables['pasti_dati'][$field_name] = [
       'label' => $label,
